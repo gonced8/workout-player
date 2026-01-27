@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "title": "Quick full body",
+  "description": "15-minute full body workout - no equipment needed",
+  "equipment": ["bodyweight"],
+  "skipLastRest": true,
+  "steps": [
+    {
+      "id": "jumping-jacks",
+      "type": "timer",
+      "name": "Jumping jacks",
+      "durationSeconds": 60
+    },
+    {
+      "id": "rest-1",
+      "type": "timer",
+      "name": "Rest",
+      "durationSeconds": 20
+    },
+    {
+      "id": "squats",
+      "type": "reps",
+      "name": "Bodyweight squats",
+      "reps": 20
+    },
+    {
+      "id": "rest-2",
+      "type": "timer",
+      "name": "Rest",
+      "durationSeconds": 20
+    },
+    {
+      "id": "pushups",
+      "type": "reps",
+      "name": "Push-ups",
+      "reps": 10
+    },
+    {
+      "id": "rest-3",
+      "type": "timer",
+      "name": "Rest",
+      "durationSeconds": 20
+    },
+    {
+      "id": "lunges",
+      "type": "reps",
+      "name": "Lunges",
+      "reps": 16,
+      "notes": "8 per leg"
+    },
+    {
+      "id": "rest-4",
+      "type": "timer",
+      "name": "Rest",
+      "durationSeconds": 20
+    },
+    {
+      "id": "plank",
+      "type": "timer",
+      "name": "Plank hold",
+      "durationSeconds": 30
+    },
+    {
+      "id": "final-rest",
+      "type": "timer",
+      "name": "Rest",
+      "durationSeconds": 30
+    }
+  ]
+}

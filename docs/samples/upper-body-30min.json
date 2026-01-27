@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "title": "Upper body strength - 30 min",
+  "description": "30-minute upper body workout with dumbbells",
+  "equipment": ["dumbbells", "resistance band"],
+  "steps": [
+    {
+      "id": "warmup-1",
+      "type": "timer",
+      "name": "Arm circles",
+      "durationSeconds": 60,
+      "notes": "Forward and backward"
+    },
+    {
+      "id": "exercise-1",
+      "type": "reps",
+      "name": "Push-ups",
+      "reps": 15,
+      "notes": "Modify on knees if needed"
+    },
+    {
+      "id": "rest-1",
+      "type": "timer",
+      "name": "Rest",
+      "durationSeconds": 45
+    },
+    {
+      "id": "exercise-2",
+      "type": "reps",
+      "name": "Dumbbell shoulder press",
+      "reps": 12
+    },
+    {
+      "id": "rest-2",
+      "type": "timer",
+      "name": "Rest",
+      "durationSeconds": 45
+    },
+    {
+      "id": "exercise-3",
+      "type": "reps",
+      "name": "Resistance band rows",
+      "reps": 15,
+      "notes": "Squeeze shoulder blades together"
+    },
+    {
+      "id": "rest-3",
+      "type": "timer",
+      "name": "Rest",
+      "durationSeconds": 45
+    },
+    {
+      "id": "exercise-4",
+      "type": "reps",
+      "name": "Tricep dips",
+      "reps": 12
+    },
+    {
+      "id": "cooldown",
+      "type": "timer",
+      "name": "Stretch",
+      "durationSeconds": 120
+    }
+  ]
+}

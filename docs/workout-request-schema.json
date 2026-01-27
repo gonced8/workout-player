@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://workout-player.pages.dev/schemas/workout-request.json",
+  "title": "Workout Request",
+  "description": "Request format for AI to generate a workout",
+  "type": "object",
+  "required": ["durationMinutes", "focus", "equipment"],
+  "properties": {
+    "durationMinutes": {
+      "type": "number",
+      "minimum": 5,
+      "maximum": 120,
+      "description": "Target total duration in minutes"
+    },
+    "focus": {
+      "type": "string",
+      "description": "Workout focus area (e.g., upper body, legs, full body, core)"
+    },
+    "equipment": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Equipment available (e.g., dumbbells, resistance band, or bodyweight)"
+    },
+    "intensity": {
+      "type": "string",
+      "enum": ["light", "moderate", "heavy"],
+      "description": "Workout intensity level (optional)"
+    },
+    "goals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Workout goals (optional, e.g., build muscle, endurance)"
+    }
+  }
+}

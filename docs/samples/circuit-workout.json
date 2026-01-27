@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "title": "Circuit workout",
+  "description": "Warm up, 3 rounds of push-ups and squats with rest between, then cool down.",
+  "equipment": ["bodyweight"],
+  "skipLastRest": true,
+  "steps": [
+    {
+      "id": "warmup",
+      "type": "timer",
+      "name": "Warm up",
+      "durationSeconds": 90
+    },
+    {
+      "id": "circuit-1",
+      "type": "group",
+      "name": "Circuit 1",
+      "rounds": 3,
+      "skipLastRest": true,
+      "steps": [
+        {
+          "id": "c1-pushups",
+          "type": "reps",
+          "name": "Push-ups",
+          "reps": 10,
+          "notes": "Keep your core tight"
+        },
+        {
+          "id": "c1-rest1",
+          "type": "timer",
+          "name": "Rest",
+          "durationSeconds": 30
+        },
+        {
+          "id": "c1-squats",
+          "type": "reps",
+          "name": "Squats",
+          "reps": 12,
+          "notes": "Go deep!"
+        },
+        {
+          "id": "c1-rest2",
+          "type": "timer",
+          "name": "Rest",
+          "durationSeconds": 30
+        }
+      ]
+    },
+    {
+      "id": "cooldown",
+      "type": "timer",
+      "name": "Cool down",
+      "durationSeconds": 60
+    }
+  ]
+}
