@@ -1,17 +1,19 @@
-import type { PlayerState, FlatStep } from './types';
+import type { PlayerState, FlatStep, Workout, Step } from './types';
 import { formatTime, formatDuration, flattenSteps, estimateDuration } from './workout';
+import { playCountdownBeep, playCompletionSound, initSound } from './sound';
 
 export class WorkoutUI {
   private appElement: HTMLElement;
-  private currentView: 'landing' | 'player' = 'landing';
+  private currentView: 'landing' | 'preview' | 'countdown' | 'player' = 'landing';
 
   constructor(appElement: HTMLElement) {
     this.appElement = appElement;
   }
 
   public showLanding(
-    onStart: (json: string) => void,
-    onLoadSample: () => void
+    onPreview: (json: string) => void,
+    onLoadSample: () => void,
+    initialJson?: string
   ): void {
     this.currentView = 'landing';
     this.appElement.innerHTML = `
@@ -32,7 +34,7 @@ export class WorkoutUI {
 
         <div class="button-group">
           <button id="load-sample-btn" class="secondary">Load Sample</button>
-          <button id="start-btn" class="primary">Validate & Start</button>
+          <button id="start-btn" class="primary">Validate & Preview</button>
         </div>
       </div>
     `;
@@ -42,6 +44,11 @@ export class WorkoutUI {
     const sampleBtn = document.getElementById('load-sample-btn') as HTMLButtonElement;
     const errorEl = document.getElementById('error-message') as HTMLDivElement;
     const durationEl = document.getElementById('duration-estimate') as HTMLDivElement;
+
+    if (initialJson !== undefined) {
+      textarea.value = initialJson;
+      textarea.dispatchEvent(new Event('input'));
+    }
 
     // Update duration estimate as user types
     textarea.addEventListener('input', () => {
@@ -69,7 +76,7 @@ export class WorkoutUI {
         return;
       }
       try {
-        onStart(json);
+        onPreview(json);
       } catch (error) {
         errorEl.textContent = error instanceof Error ? error.message : 'Invalid workout';
       }
@@ -78,6 +85,102 @@ export class WorkoutUI {
     sampleBtn.addEventListener('click', () => {
       onLoadSample();
     });
+  }
+
+  public showPreview(
+    workout: Workout,
+    flatSteps: FlatStep[],
+    onBack: () => void,
+    onStart: () => void
+  ): void {
+    this.currentView = 'preview';
+    const duration = estimateDuration(flatSteps);
+    const stepsHtml = this.renderPreviewStepsTree(workout.steps);
+
+    this.appElement.innerHTML = `
+      <div class="preview">
+        <h1 class="preview-title">${workout.title}</h1>
+        ${workout.description ? `<p class="preview-description">${workout.description}</p>` : ''}
+        ${workout.equipment?.length ? `<p class="preview-equipment">Equipment: ${workout.equipment.join(', ')}</p>` : ''}
+        <p class="preview-duration">Estimated duration: ${formatDuration(duration)} · ${flatSteps.length} steps</p>
+        <ul class="preview-steps">
+          ${stepsHtml}
+        </ul>
+        <div class="preview-actions">
+          <button id="preview-back-btn" class="secondary large">Back to edit</button>
+          <button id="preview-start-btn" class="primary large">Start workout</button>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('preview-back-btn')?.addEventListener('click', onBack);
+    document.getElementById('preview-start-btn')?.addEventListener('click', onStart);
+  }
+
+  private renderPreviewStepsTree(steps: Step[]): string {
+    return steps
+      .map((step) => {
+        if (step.type === 'timer') {
+          return `
+          <li class="preview-step preview-step-timer">
+            <span class="preview-step-name">${step.name}</span>
+            <span class="preview-step-meta">${formatDuration(step.durationSeconds)}</span>
+          </li>`;
+        }
+        if (step.type === 'reps') {
+          return `
+          <li class="preview-step preview-step-reps">
+            <span class="preview-step-name">${step.name}</span>
+            <span class="preview-step-meta">× ${step.reps} reps</span>
+          </li>`;
+        }
+        // group
+        const roundsLabel = step.rounds === 1 ? '1 round' : `${step.rounds} rounds`;
+        const innerStepsHtml = this.renderPreviewStepsTree(step.steps);
+        return `
+          <li class="preview-step preview-step-group">
+            <div class="preview-group-header">
+              <span class="preview-group-name">${step.name}</span>
+              <span class="preview-group-rounds">× ${roundsLabel}</span>
+            </div>
+            <ul class="preview-group-steps">
+              ${innerStepsHtml}
+            </ul>
+          </li>`;
+      })
+      .join('');
+  }
+
+  public showCountdown(onFinish: () => void): void {
+    this.currentView = 'countdown';
+    initSound();
+
+    this.appElement.innerHTML = `
+      <div class="countdown" id="countdown-view">
+        <div class="countdown-number" id="countdown-number">3</div>
+        <p class="countdown-label">Get ready</p>
+      </div>
+    `;
+
+    let remaining = 3;
+    const numberEl = document.getElementById('countdown-number');
+    const labelEl = this.appElement.querySelector('.countdown-label');
+
+    const tick = (): void => {
+      if (remaining > 0) {
+        if (numberEl) numberEl.textContent = String(remaining);
+        playCountdownBeep();
+        remaining--;
+        setTimeout(tick, 1000);
+      } else {
+        if (numberEl) numberEl.textContent = 'Go!';
+        if (labelEl) (labelEl as HTMLElement).textContent = '';
+        playCompletionSound();
+        setTimeout(onFinish, 400);
+      }
+    };
+
+    tick();
   }
 
   public showPlayer(
@@ -143,7 +246,7 @@ export class WorkoutUI {
     // Check if we need full re-render (step changed OR pause state changed)
     const stepChanged = currentStepIndex !== (this.appElement as any)._lastStepIndex;
     const pauseChanged = isPaused !== (this.appElement as any)._lastPauseState;
-    
+
     (this.appElement as any)._lastStepIndex = currentStepIndex;
     (this.appElement as any)._lastPauseState = isPaused;
 
@@ -192,7 +295,7 @@ export class WorkoutUI {
     if (nextPreview) {
       const nextStep = flatSteps[currentStepIndex + 1];
       if (nextStep) {
-        const nextType = nextStep.type === 'timer' ? 
+        const nextType = nextStep.type === 'timer' ?
           `${formatDuration(nextStep.durationSeconds)}` :
           `${nextStep.reps} reps`;
         nextPreview.innerHTML = `<p>Next: <strong>${nextStep.name}</strong> (${nextType})</p>`;
@@ -278,19 +381,19 @@ export class WorkoutUI {
       pauseBtn.parentNode?.replaceChild(newPauseBtn, pauseBtn);
       newPauseBtn.addEventListener('click', callbacks.onPause);
     }
-    
+
     if (resumeBtn) {
       const newResumeBtn = resumeBtn.cloneNode(true) as HTMLElement;
       resumeBtn.parentNode?.replaceChild(newResumeBtn, resumeBtn);
       newResumeBtn.addEventListener('click', callbacks.onResume);
     }
-    
+
     if (nextBtn) {
       const newNextBtn = nextBtn.cloneNode(true) as HTMLElement;
       nextBtn.parentNode?.replaceChild(newNextBtn, nextBtn);
       newNextBtn.addEventListener('click', callbacks.onNext);
     }
-    
+
     if (completeBtn) {
       const newCompleteBtn = completeBtn.cloneNode(true) as HTMLElement;
       completeBtn.parentNode?.replaceChild(newCompleteBtn, completeBtn);

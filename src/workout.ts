@@ -131,8 +131,8 @@ function flattenGroup(group: GroupStep, result: FlatStep[]): void {
       flattenStep(step, result, { ...roundContext });
     }
 
-    // Apply group-level skipLastRest for this round
-    if (group.skipLastRest && result.length > roundStartIndex) {
+    // Skip last rest only after the final round of the group
+    if (group.skipLastRest && round === group.rounds && result.length > roundStartIndex) {
       const lastStepInRound = result[result.length - 1];
       if (lastStepInRound && isRest(lastStepInRound)) {
         result.pop();

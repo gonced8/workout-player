@@ -1,7 +1,7 @@
 import './style.css';
 import { WorkoutPlayer } from './player';
 import { WorkoutUI } from './ui';
-import { parseWorkout } from './workout';
+import { parseWorkout, flattenSteps } from './workout';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 const player = new WorkoutPlayer();
@@ -34,8 +34,21 @@ const sampleWorkout = {
 };
 
 function init() {
-  // Show landing page
-  ui.showLanding(handleStart, handleLoadSample);
+  ui.showLanding(handlePreview, handleLoadSample);
+}
+
+function handlePreview(json: string) {
+  try {
+    const workout = parseWorkout(json);
+    const flatSteps = flattenSteps(workout);
+    ui.showPreview(workout, flatSteps, () => {
+      ui.showLanding(handlePreview, handleLoadSample, json);
+    }, () => {
+      ui.showCountdown(() => handleStart(json));
+    });
+  } catch (error) {
+    ui.showError(error instanceof Error ? error.message : 'Invalid workout');
+  }
 }
 
 function handleStart(json: string) {
@@ -44,7 +57,6 @@ function handleStart(json: string) {
     player.loadWorkout(workout);
     player.start();
 
-    // Listen for state changes
     player.onUpdate((state) => {
       ui.showPlayer(
         state,
@@ -56,7 +68,6 @@ function handleStart(json: string) {
       );
     });
 
-    // Show initial player state
     ui.showPlayer(
       player.getState(),
       () => player.pause(),

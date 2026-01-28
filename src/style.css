@@ -263,6 +263,152 @@ button:focus-visible {
   margin-top: 1rem;
 }
 
+/* Preview */
+.preview {
+  max-width: 560px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.preview-title {
+  font-size: 2em;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.preview-description {
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 0.95em;
+}
+
+.preview-equipment {
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+  font-size: 0.9em;
+  margin-bottom: 0.5rem;
+}
+
+.preview-duration {
+  color: #646cff;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.preview-steps {
+  list-style: none;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.preview-step {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.95em;
+}
+
+.preview-step:last-child {
+  border-bottom: none;
+}
+
+.preview-step-name {
+  font-weight: 500;
+}
+
+.preview-step-meta {
+  color: #646cff;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Group with repeats */
+.preview-step-group {
+  display: block;
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.preview-step-group:last-child {
+  border-bottom: none;
+}
+
+.preview-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.preview-group-name {
+  color: inherit;
+}
+
+.preview-group-rounds {
+  color: #646cff;
+  font-weight: 600;
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+.preview-group-steps {
+  list-style: none;
+  padding-left: 1.25rem;
+  border-left: 2px solid rgba(100, 108, 255, 0.3);
+  margin-left: 0.25rem;
+}
+
+.preview-group-steps .preview-step {
+  padding: 0.4rem 0.5rem;
+  font-size: 0.9em;
+}
+
+.preview-group-steps .preview-step-meta {
+  font-size: 0.95em;
+}
+
+.preview-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Countdown */
+.countdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  text-align: center;
+}
+
+.countdown-number {
+  font-size: 8em;
+  font-weight: bold;
+  color: #646cff;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown-label {
+  margin-top: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.2em;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   #app {
