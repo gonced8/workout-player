@@ -1,13 +1,4 @@
-// Workout request format (for AI input)
-export interface WorkoutRequest {
-  durationMinutes: number;
-  focus: string;
-  equipment: string[];
-  intensity?: 'light' | 'moderate' | 'heavy';
-  goals?: string[];
-}
-
-// Workout playback format (what the app consumes)
+// Workout playback format
 export interface Workout {
   version: number;
   title: string;
@@ -28,7 +19,7 @@ export interface BaseStep {
 export interface TimerStep extends BaseStep {
   type: 'timer';
   durationSeconds: number;
-  rest?: boolean; // If true, treated as rest for skipLastRest logic
+  rest?: boolean;
 }
 
 export interface RepsStep extends BaseStep {
@@ -72,7 +63,7 @@ export interface PlayerState {
   currentStepIndex: number;
   isPlaying: boolean;
   isPaused: boolean;
-  stepStartedAt: number | null; // timestamp for wall-clock timer
-  timerDuration: number | null; // original duration we're counting down from
-  remainingSeconds: number | null; // current remaining time for display
+  stepStartedAt: number | null;
+  timerDuration: number | null;
+  remainingSeconds: number | null;
 }
