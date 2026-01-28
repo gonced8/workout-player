@@ -175,7 +175,10 @@ export function formatDuration(seconds: number): string {
 }
 
 export function formatTime(seconds: number): string {
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
+  // Use Math.ceil so that 29.9 seconds displays as "30"
+  // This prevents the "fast first second" feeling
+  const totalSeconds = Math.ceil(seconds);
+  const mins = Math.floor(totalSeconds / 60);
+  const secs = totalSeconds % 60;
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 }

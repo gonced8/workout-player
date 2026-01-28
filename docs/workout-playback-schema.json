@@ -4,7 +4,11 @@
   "title": "Workout Playback Format",
   "description": "Format for workouts that the player app consumes",
   "type": "object",
-  "required": ["version", "title", "steps"],
+  "required": [
+    "version",
+    "title",
+    "steps"
+  ],
   "properties": {
     "version": {
       "type": "number",
@@ -43,14 +47,25 @@
   "$defs": {
     "step": {
       "oneOf": [
-        { "$ref": "#/$defs/timerStep" },
-        { "$ref": "#/$defs/repsStep" },
-        { "$ref": "#/$defs/groupStep" }
+        {
+          "$ref": "#/$defs/timerStep"
+        },
+        {
+          "$ref": "#/$defs/repsStep"
+        },
+        {
+          "$ref": "#/$defs/groupStep"
+        }
       ]
     },
     "timerStep": {
       "type": "object",
-      "required": ["id", "type", "name", "durationSeconds"],
+      "required": [
+        "id",
+        "type",
+        "name",
+        "durationSeconds"
+      ],
       "properties": {
         "id": {
           "type": "string",
@@ -81,7 +96,12 @@
     },
     "repsStep": {
       "type": "object",
-      "required": ["id", "type", "name", "reps"],
+      "required": [
+        "id",
+        "type",
+        "name",
+        "reps"
+      ],
       "properties": {
         "id": {
           "type": "string",
@@ -108,7 +128,13 @@
     },
     "groupStep": {
       "type": "object",
-      "required": ["id", "type", "name", "rounds", "steps"],
+      "required": [
+        "id",
+        "type",
+        "name",
+        "rounds",
+        "steps"
+      ],
       "properties": {
         "id": {
           "type": "string",

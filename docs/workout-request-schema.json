@@ -4,7 +4,11 @@
   "title": "Workout Request",
   "description": "Request format for AI to generate a workout",
   "type": "object",
-  "required": ["durationMinutes", "focus", "equipment"],
+  "required": [
+    "durationMinutes",
+    "focus",
+    "equipment"
+  ],
   "properties": {
     "durationMinutes": {
       "type": "number",
@@ -25,7 +29,11 @@
     },
     "intensity": {
       "type": "string",
-      "enum": ["light", "moderate", "heavy"],
+      "enum": [
+        "light",
+        "moderate",
+        "heavy"
+      ],
       "description": "Workout intensity level (optional)"
     },
     "goals": {

@@ -2,7 +2,9 @@
   "version": 1,
   "title": "Circuit workout",
   "description": "Warm up, 3 rounds of push-ups and squats with rest between, then cool down.",
-  "equipment": ["bodyweight"],
+  "equipment": [
+    "bodyweight"
+  ],
   "skipLastRest": true,
   "steps": [
     {

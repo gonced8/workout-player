@@ -80,12 +80,14 @@ npm run preview
 ### Deploy to Cloudflare Pages
 
 **Option 1: Wrangler CLI**
+
 ```bash
 npm run build
 npx wrangler pages deploy dist --project-name=workout-player
 ```
 
 **Option 2: Git Integration**
+
 1. Push to GitHub/GitLab
 2. Connect to Cloudflare Pages
 3. Build settings:
@@ -113,6 +115,7 @@ if (remaining <= 0) {
 ```
 
 This ensures the timer stays accurate even when:
+
 - The phone is locked
 - The tab is backgrounded
 - JavaScript is throttled by the browser
@@ -156,12 +159,14 @@ Total: ~20 kB (gzipped: ~6.7 kB) - extremely lightweight!
 ## 🎨 Features Showcase
 
 ### Landing Page
+
 - Workout JSON textarea with validation
 - Real-time duration estimate
 - "Load Sample" button for quick start
 - Error display for invalid JSON
 
 ### Player View
+
 - Large, readable countdown timer (MM:SS format)
 - Rep counter with clear "Done" button
 - Progress bar and step counter
@@ -171,11 +176,13 @@ Total: ~20 kB (gzipped: ~6.7 kB) - extremely lightweight!
 - Pause/Resume/Skip controls
 
 ### Audio Feedback
+
 - Countdown beeps at 3, 2, 1 seconds
 - Completion sound when timer finishes
 - No external audio files required (Web Audio API)
 
 ### Responsive Design
+
 - Mobile-first layout
 - Large tap targets for exercise use
 - Adjusts font sizes for small screens
@@ -240,6 +247,7 @@ The codebase is structured to easily add:
 Production: None (vanilla TypeScript)
 
 Development:
+
 - `typescript` ^5.7.0
 - `vite` ^6.0.0
 

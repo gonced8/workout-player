@@ -6,12 +6,14 @@
 
 **Root Cause**: The `computeRemaining()` function was incorrectly calculating elapsed time. When resuming from pause, it was using the wrong base time.
 
-**Fix**: 
+**Fix**:
+
 - When starting/resuming a timer, we now store the exact `Date.now()` timestamp and the initial remaining seconds
 - The `computeRemaining()` calculates: `initialRemaining - (Date.now() - stepStartedAt) / 1000`
 - This ensures the timer counts in real seconds, even when paused/resumed
 
 **Code Changed**:
+
 ```typescript
 // Before: Wrong calculation
 const elapsed = (Date.now() - this.state.stepStartedAt) / 1000;
@@ -34,12 +36,14 @@ return Math.max(0, initialRemaining - elapsed);
 
 **Root Cause**: Event listeners were being added multiple times every time the UI updated (100ms intervals for timer), causing listener buildup and preventing proper event handling.
 
-**Fix**: 
+**Fix**:
+
 - Clone and replace button elements before adding new listeners
 - This removes all old event listeners and adds fresh ones
 - Prevents duplicate listeners and ensures clean event handling
 
 **Code Changed**:
+
 ```typescript
 // Before: Adding listeners on top of old ones
 pauseBtn?.addEventListener('click', callbacks.onPause);
@@ -57,7 +61,8 @@ if (nextBtn) {
 
 **Problem**: Countdown beeps (3-2-1) might play multiple times per second.
 
-**Fix**: 
+**Fix**:
+
 - Store previous remaining time before calculating new remaining time
 - Only play beep when the ceiled second value changes (3.9 → 2.8 triggers beep, but 3.9 → 3.7 doesn't)
 

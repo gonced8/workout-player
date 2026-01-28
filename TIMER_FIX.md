@@ -7,6 +7,7 @@
 **Problem**: The timer was using `this.state.remainingSeconds` both as the value being updated AND as the reference for what to count down from. This created a circular reference where each calculation used the previous calculation's output.
 
 **Example of the bug**:
+
 ```typescript
 // Bug: Using remainingSeconds as both input and output
 const initialRemaining = this.state.remainingSeconds ?? currentStep.durationSeconds;
@@ -24,6 +25,7 @@ this.state.remainingSeconds = initialRemaining - elapsed;
 ### Issue 2: Button Flickering 🔄
 
 **Problem**: Every 100ms, `notifyStateChange()` was called, which triggered a full UI re-render including:
+
 - Re-creating all button HTML
 - Cloning and replacing buttons (to remove old event listeners)
 - Re-attaching event listeners
@@ -45,6 +47,7 @@ export interface PlayerState {
 ```
 
 **Now the logic is clean**:
+
 ```typescript
 private startTimer(step: { durationSeconds: number }): void {
   this.state.stepStartedAt = Date.now();
@@ -85,6 +88,7 @@ private quickTimerUpdate(remainingSeconds: number | null): void {
 ```
 
 **Benefits**:
+
 - ✅ Buttons no longer flicker (not re-rendered every 100ms)
 - ✅ Event listeners stay attached (no clone/replace needed)
 - ✅ Smooth timer display updates
@@ -121,12 +125,14 @@ public pause(): void {
 
 ## Performance Impact
 
-**Before**: 
+**Before**:
+
 - Full UI re-render every 100ms (10x per second)
 - Button clone/replace every 100ms
 - ~15-20 DOM operations per tick
 
 **After**:
+
 - Quick text update every 100ms (during timer)
 - Full render only on step changes
 - ~1-2 DOM operations per tick

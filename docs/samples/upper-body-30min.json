@@ -2,7 +2,10 @@
   "version": 1,
   "title": "Upper body strength - 30 min",
   "description": "30-minute upper body workout with dumbbells",
-  "equipment": ["dumbbells", "resistance band"],
+  "equipment": [
+    "dumbbells",
+    "resistance band"
+  ],
   "steps": [
     {
       "id": "warmup-1",

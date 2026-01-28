@@ -88,6 +88,18 @@ export class WorkoutPlayer {
       return;
     }
 
+    // Clear any running timer
+    if (this.timerIntervalId !== null) {
+      clearInterval(this.timerIntervalId);
+      this.timerIntervalId = null;
+    }
+
+    // Play completion sound if we're skipping a timer step
+    const currentStep = this.getCurrentStep();
+    if (currentStep?.type === 'timer') {
+      playCompletionSound();
+    }
+
     this.advanceToNextStep();
   }
 
@@ -110,6 +122,7 @@ export class WorkoutPlayer {
   public completeRepsStep(): void {
     const currentStep = this.getCurrentStep();
     if (currentStep?.type === 'reps' && this.state.isPlaying) {
+      playCompletionSound();
       this.advanceToNextStep();
     }
   }
@@ -211,6 +224,9 @@ export class WorkoutPlayer {
 
   private advanceToNextStep(): void {
     this.state.currentStepIndex++;
+    
+    // Clear pause state when moving to new step
+    this.state.isPaused = false;
 
     if (this.state.currentStepIndex >= this.state.flatSteps.length) {
       this.completeWorkout();
