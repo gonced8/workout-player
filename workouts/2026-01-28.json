@@ -1,0 +1,153 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://workout-player.pages.dev/schemas/workout-playback.json",
+    "title": "Ironman Strength: Home Edition",
+    "description": "A 30-minute full-body strength routine focusing on compound movements and time-under-tension. Designed for endurance athletes looking to build raw power.",
+    "version": 1,
+    "equipment": [
+        "Pull-up Bar",
+        "Floor Mat"
+    ],
+    "skipLastRest": true,
+    "steps": [
+        {
+            "id": "warmup_group",
+            "type": "group",
+            "name": "Mobility Warm-up",
+            "description": "Prepare joints and increase blood flow.",
+            "rounds": 1,
+            "skipLastRest": true,
+            "steps": [
+                {
+                    "id": "wu_1",
+                    "type": "timer",
+                    "name": "Arm Circles & Chest Openers",
+                    "durationSeconds": 45,
+                    "rest": false,
+                    "notes": "Large circles, opening the chest wide."
+                },
+                {
+                    "id": "wu_2",
+                    "type": "timer",
+                    "name": "Walkouts to Plank",
+                    "durationSeconds": 60,
+                    "rest": false,
+                    "notes": "Hinge at hips, walk hands out to plank, pause, walk back. Stretch those hamstrings."
+                },
+                {
+                    "id": "wu_3",
+                    "type": "reps",
+                    "name": "Deep Squat Holds",
+                    "reps": 10,
+                    "notes": "Squat deep, hold for 2 seconds, stand up."
+                },
+                {
+                    "id": "wu_4",
+                    "type": "timer",
+                    "name": "Dead Hang",
+                    "durationSeconds": 30,
+                    "rest": false,
+                    "notes": "Hang from the bar to decompress spine and wake up shoulders."
+                }
+            ]
+        },
+        {
+            "id": "strength_circuit_1",
+            "type": "group",
+            "name": "Strength Circuit A (Upper Pull / Lower Push)",
+            "rounds": 3,
+            "skipLastRest": true,
+            "notes": "Perform movements slowly. Focus on form over speed.",
+            "steps": [
+                {
+                    "id": "sc1_pullups",
+                    "type": "reps",
+                    "name": "Strict Pull-ups",
+                    "reps": 8,
+                    "notes": "Full ROM. If 8 is too easy, slow down the descent (3 seconds down)."
+                },
+                {
+                    "id": "rest_1",
+                    "type": "timer",
+                    "name": "Rest",
+                    "durationSeconds": 45,
+                    "rest": true
+                },
+                {
+                    "id": "sc1_lunges",
+                    "type": "reps",
+                    "name": "Reverse Lunges (Alternating)",
+                    "reps": 20,
+                    "notes": "10 per leg. Keep torso upright. Drive through the front heel."
+                },
+                {
+                    "id": "rest_2",
+                    "type": "timer",
+                    "name": "Rest",
+                    "durationSeconds": 45,
+                    "rest": true
+                }
+            ]
+        },
+        {
+            "id": "strength_circuit_2",
+            "type": "group",
+            "name": "Strength Circuit B (Upper Push / Core)",
+            "rounds": 3,
+            "skipLastRest": true,
+            "steps": [
+                {
+                    "id": "sc2_pushups",
+                    "type": "reps",
+                    "name": "Tempo Push-ups",
+                    "reps": 12,
+                    "notes": "2 seconds down, 1 second pause at bottom, explode up."
+                },
+                {
+                    "id": "rest_3",
+                    "type": "timer",
+                    "name": "Rest",
+                    "durationSeconds": 45,
+                    "rest": true
+                },
+                {
+                    "id": "sc2_legraises",
+                    "type": "reps",
+                    "name": "Hanging Leg Raises",
+                    "reps": 10,
+                    "notes": "Hang from bar. Lift knees or straight legs to chest. Do not swing."
+                },
+                {
+                    "id": "rest_4",
+                    "type": "timer",
+                    "name": "Rest",
+                    "durationSeconds": 45,
+                    "rest": true
+                }
+            ]
+        },
+        {
+            "id": "cooldown_group",
+            "type": "group",
+            "name": "Cool Down",
+            "rounds": 1,
+            "steps": [
+                {
+                    "id": "cd_1",
+                    "type": "timer",
+                    "name": "Forward Fold",
+                    "durationSeconds": 60,
+                    "rest": false,
+                    "notes": "Relax the lower back."
+                },
+                {
+                    "id": "cd_2",
+                    "type": "timer",
+                    "name": "Child's Pose",
+                    "durationSeconds": 60,
+                    "rest": false
+                }
+            ]
+        }
+    ]
+}
