@@ -1,0 +1,152 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://workout-player.pages.dev/schemas/workout-playback.json",
+    "title": "Ironman Strength B: Unilateral Power",
+    "description": "Session B focuses on single-leg stability and overhead strength. We switch to Chin-ups to vary the upper body pulling stimulus.",
+    "version": 1,
+    "equipment": [
+      "Pull-up Bar",
+      "Chair or Couch"
+    ],
+    "skipLastRest": true,
+    "steps": [
+      {
+        "id": "warmup_group_b",
+        "type": "group",
+        "name": "Mobility Warm-up",
+        "rounds": 1,
+        "skipLastRest": true,
+        "steps": [
+          {
+            "id": "wu_b1",
+            "type": "timer",
+            "name": "Scapular Pull-ups",
+            "durationSeconds": 45,
+            "rest": false,
+            "notes": "Hang from bar. Keep arms straight. Shrug shoulders down and back, then release."
+          },
+          {
+            "id": "wu_b2",
+            "type": "reps",
+            "name": "World's Greatest Stretch",
+            "reps": 6,
+            "notes": "3 per side. Lunge forward, rotate elbow to floor, then rotate hand to ceiling."
+          },
+          {
+            "id": "wu_b3",
+            "type": "timer",
+            "name": "High Knees (In Place)",
+            "durationSeconds": 30,
+            "rest": false,
+            "notes": "Get the heart rate up slightly."
+          }
+        ]
+      },
+      {
+        "id": "strength_circuit_3",
+        "type": "group",
+        "name": "Circuit A: Vertical Push/Pull",
+        "rounds": 3,
+        "skipLastRest": true,
+        "notes": "Focus on full range of motion.",
+        "steps": [
+          {
+            "id": "sc3_chinups",
+            "type": "reps",
+            "name": "Strict Chin-ups",
+            "reps": 6,
+            "notes": "Palms facing YOU. Full extension at bottom. Chin over bar at top."
+          },
+          {
+            "id": "rest_a1",
+            "type": "timer",
+            "name": "Rest",
+            "durationSeconds": 30,
+            "rest": true
+          },
+          {
+            "id": "sc3_pikepushups",
+            "type": "reps",
+            "name": "Pike Push-ups",
+            "reps": 10,
+            "notes": "Hike hips up in a V-shape (downward dog). Lower head to floor, push back up."
+          },
+          {
+            "id": "rest_a2",
+            "type": "timer",
+            "name": "Rest",
+            "durationSeconds": 60,
+            "rest": true
+          }
+        ]
+      },
+      {
+        "id": "strength_circuit_4",
+        "type": "group",
+        "name": "Circuit B: Unilateral Legs & Core",
+        "rounds": 3,
+        "skipLastRest": true,
+        "steps": [
+          {
+            "id": "sc4_split_squat_left",
+            "type": "reps",
+            "name": "Bulgarian Split Squat (Left)",
+            "reps": 8,
+            "notes": "Right foot back on couch/chair. Lower knee almost to floor. Keep torso upright."
+          },
+          {
+            "id": "sc4_split_squat_right",
+            "type": "reps",
+            "name": "Bulgarian Split Squat (Right)",
+            "reps": 8,
+            "notes": "Switch legs."
+          },
+          {
+            "id": "rest_b1",
+            "type": "timer",
+            "name": "Rest",
+            "durationSeconds": 30,
+            "rest": true
+          },
+          {
+            "id": "sc4_plank",
+            "type": "timer",
+            "name": "Plank Shoulder Taps",
+            "durationSeconds": 45,
+            "rest": false,
+            "notes": "High plank position. Tap opposite shoulder. Minimize hip rocking."
+          },
+          {
+            "id": "rest_b2",
+            "type": "timer",
+            "name": "Rest",
+            "durationSeconds": 45,
+            "rest": true
+          }
+        ]
+      },
+      {
+        "id": "cooldown_group_b",
+        "type": "group",
+        "name": "Cool Down",
+        "rounds": 1,
+        "steps": [
+          {
+            "id": "cd_b1",
+            "type": "timer",
+            "name": "Pigeon Pose (Left)",
+            "durationSeconds": 45,
+            "rest": false,
+            "notes": "Stretch that outer glute."
+          },
+          {
+            "id": "cd_b2",
+            "type": "timer",
+            "name": "Pigeon Pose (Right)",
+            "durationSeconds": 45,
+            "rest": false
+          }
+        ]
+      }
+    ]
+  }

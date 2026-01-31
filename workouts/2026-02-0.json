@@ -1,0 +1,161 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://workout-player.pages.dev/schemas/workout-playback.json",
+    "title": "Ironman Strength C: Advanced Calisthenics",
+    "description": "Session C increases pushing difficulty with Archer variations and focuses on dynamic activation. Cooldown strictly targets worked muscle groups.",
+    "version": 1,
+    "equipment": [
+        "Pull-up Bar",
+        "Floor Mat"
+    ],
+    "skipLastRest": true,
+    "steps": [
+        {
+            "id": "warmup_group_c",
+            "type": "group",
+            "name": "Dynamic Activation (No Static Holds)",
+            "rounds": 1,
+            "skipLastRest": true,
+            "steps": [
+                {
+                    "id": "wu_c1",
+                    "type": "timer",
+                    "name": "Arm Swings & Cross-Body Slaps",
+                    "durationSeconds": 45,
+                    "rest": false,
+                    "notes": "Dynamic motion. Swing arms horizontally and vertically to grease the shoulder joints."
+                },
+                {
+                    "id": "wu_c2",
+                    "type": "timer",
+                    "name": "Torso Twists",
+                    "durationSeconds": 45,
+                    "rest": false,
+                    "notes": "Keep hips forward, rotate upper body left to right dynamically."
+                },
+                {
+                    "id": "wu_c3",
+                    "type": "timer",
+                    "name": "Leg Swings (Front/Back)",
+                    "durationSeconds": 60,
+                    "rest": false,
+                    "notes": "30s Left leg, 30s Right leg. Swing freely to loosen hip flexors."
+                },
+                {
+                    "id": "wu_c4",
+                    "type": "reps",
+                    "name": "Inchworms (Continuous)",
+                    "reps": 8,
+                    "notes": "Walk hands out to plank, immediately walk feet to hands. Do not hold the stretch. Keep moving."
+                }
+            ]
+        },
+        {
+            "id": "strength_circuit_5",
+            "type": "group",
+            "name": "Circuit A: Advanced Upper Body",
+            "rounds": 3,
+            "skipLastRest": true,
+            "steps": [
+                {
+                    "id": "sc5_archer",
+                    "type": "reps",
+                    "name": "Archer Push-ups (Total)",
+                    "reps": 12,
+                    "notes": "Wide hands. Lower chest to ONE hand while straightening the other arm. Push up, switch sides. (6 per side)."
+                },
+                {
+                    "id": "rest_c1",
+                    "type": "timer",
+                    "name": "Rest",
+                    "durationSeconds": 45,
+                    "rest": true
+                },
+                {
+                    "id": "sc5_wide_pull",
+                    "type": "reps",
+                    "name": "Wide Grip Pull-ups",
+                    "reps": 6,
+                    "notes": "Hands wider than shoulders. This isolates the lats more than standard pull-ups. Full ROM."
+                },
+                {
+                    "id": "rest_c2",
+                    "type": "timer",
+                    "name": "Rest",
+                    "durationSeconds": 60,
+                    "rest": true
+                }
+            ]
+        },
+        {
+            "id": "strength_circuit_6",
+            "type": "group",
+            "name": "Circuit B: Posterior Chain & Core",
+            "rounds": 3,
+            "skipLastRest": true,
+            "steps": [
+                {
+                    "id": "sc6_glute_bridge",
+                    "type": "reps",
+                    "name": "Single-Leg Glute Bridges",
+                    "reps": 24,
+                    "notes": "12 per leg. Lying on back, one foot planted. Drive hips up explosively, lower slowly."
+                },
+                {
+                    "id": "rest_c3",
+                    "type": "timer",
+                    "name": "Rest",
+                    "durationSeconds": 30,
+                    "rest": true
+                },
+                {
+                    "id": "sc6_hollow",
+                    "type": "timer",
+                    "name": "Hollow Body Rock",
+                    "durationSeconds": 45,
+                    "rest": false,
+                    "notes": "Lower back pressed into floor. Arms overhead, legs straight. Rock slightly like a boat."
+                },
+                {
+                    "id": "rest_c4",
+                    "type": "timer",
+                    "name": "Rest",
+                    "durationSeconds": 45,
+                    "rest": true
+                }
+            ]
+        },
+        {
+            "id": "cooldown_group_c",
+            "type": "group",
+            "name": "Targeted Muscle Relief",
+            "rounds": 1,
+            "steps": [
+                {
+                    "id": "cd_c1",
+                    "type": "timer",
+                    "name": "Chest & Anterior Deltoid Stretch",
+                    "durationSeconds": 60,
+                    "rest": false,
+                    "notes": "Clasp hands behind back, straighten arms, and lift gently to stretch the chest muscles used in Archer Push-ups."
+                },
+                {
+                    "id": "cd_c2",
+                    "type": "timer",
+                    "name": "Lat Prayer Stretch",
+                    "durationSeconds": 60,
+                    "rest": false,
+                    "notes": "Kneel, elbows on floor/couch, head drops between arms. Stretches the Lats used in Wide Pull-ups."
+                },
+                {
+                    "id": "cd_c3",
+                    "type": "timer",
+                    "name": "Figure-4 Glute Stretch",
+                    "durationSeconds": 60,
+                    "rest": false,
+                    "notes": "Lying on back, cross ankle over knee. Pull leg towards you. Targets glutes used in bridges."
+                }
+            ]
+        }
+    ]
+}
