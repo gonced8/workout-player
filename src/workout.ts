@@ -67,6 +67,11 @@ function validateStep(step: unknown, path: string): void {
       if (typeof s.reps !== 'number' || s.reps <= 0) {
         throw new Error(`${path}: Reps step must have positive reps`);
       }
+      if (s.estimatedDurationSeconds !== undefined) {
+        if (typeof s.estimatedDurationSeconds !== 'number' || s.estimatedDurationSeconds <= 0) {
+          throw new Error(`${path}: Reps step estimatedDurationSeconds must be a positive number`);
+        }
+      }
       break;
     case 'group':
       if (typeof s.rounds !== 'number' || s.rounds < 1) {
@@ -155,8 +160,8 @@ export function estimateDuration(flatSteps: FlatStep[]): number {
     if (step.type === 'timer') {
       totalSeconds += step.durationSeconds;
     } else {
-      // Estimate 5 seconds per rep
-      totalSeconds += step.reps * 5;
+      // Use optional estimated duration, otherwise ~5 seconds per rep
+      totalSeconds += step.estimatedDurationSeconds ?? step.reps * 5;
     }
   }
   return totalSeconds;

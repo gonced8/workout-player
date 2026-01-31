@@ -96,6 +96,7 @@ An exercise with a specific number of repetitions (user confirms completion).
 | `type` | "reps" | Yes | Step type |
 | `name` | string | Yes | Exercise name (e.g., "Push-ups") |
 | `reps` | number | Yes | Number of repetitions (positive integer) |
+| `estimatedDurationSeconds` | number | No | Estimated duration in seconds for total workout time (improves duration preview) |
 | `notes` | string | No | Optional coaching cues |
 
 **Example:**
@@ -106,6 +107,7 @@ An exercise with a specific number of repetitions (user confirms completion).
   "type": "reps",
   "name": "Push-ups",
   "reps": 12,
+  "estimatedDurationSeconds": 45,
   "notes": "Keep your core tight"
 }
 ```

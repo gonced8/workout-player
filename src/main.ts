@@ -23,9 +23,9 @@ const sampleWorkout = {
       rounds: 3,
       skipLastRest: true,
       steps: [
-        { id: 'c1-pushups', type: 'reps', name: 'Push-ups', reps: 10, notes: 'Keep your core tight' },
+        { id: 'c1-pushups', type: 'reps', name: 'Push-ups', reps: 10, estimatedDurationSeconds: 30, notes: 'Keep your core tight' },
         { id: 'c1-rest1', type: 'timer', name: 'Rest', durationSeconds: 30 },
-        { id: 'c1-squats', type: 'reps', name: 'Squats', reps: 12, notes: 'Go deep!' },
+        { id: 'c1-squats', type: 'reps', name: 'Squats', reps: 12, estimatedDurationSeconds: 40, notes: 'Go deep!' },
         { id: 'c1-rest2', type: 'timer', name: 'Rest', durationSeconds: 30 }
       ]
     },
@@ -46,7 +46,7 @@ function handlePreview(json: string): void {
       workout,
       flatSteps,
       () => ui.showLanding(handlePreview, handleLoadSample, json),
-      () => ui.showCountdown(() => startWorkout(workout))
+      () => ui.showCountdown(() => startWorkout(workout), flatSteps[0] ?? null)
     );
   } catch (error) {
     ui.showError(error instanceof Error ? error.message : 'Invalid workout');

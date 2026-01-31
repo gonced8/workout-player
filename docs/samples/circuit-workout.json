@@ -25,6 +25,7 @@
           "type": "reps",
           "name": "Push-ups",
           "reps": 10,
+          "estimatedDurationSeconds": 30,
           "notes": "Keep your core tight"
         },
         {
@@ -38,6 +39,7 @@
           "type": "reps",
           "name": "Squats",
           "reps": 12,
+          "estimatedDurationSeconds": 40,
           "notes": "Go deep!"
         },
         {

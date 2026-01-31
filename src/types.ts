@@ -25,6 +25,8 @@ export interface TimerStep extends BaseStep {
 export interface RepsStep extends BaseStep {
   type: 'reps';
   reps: number;
+  /** Optional estimated duration in seconds for total workout time estimation */
+  estimatedDurationSeconds?: number;
 }
 
 export interface GroupStep extends BaseStep {
@@ -47,6 +49,7 @@ export interface FlatTimerStep extends BaseStep {
 export interface FlatRepsStep extends BaseStep {
   type: 'reps';
   reps: number;
+  estimatedDurationSeconds?: number;
   roundContext?: RoundContext;
 }
 

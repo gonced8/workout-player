@@ -19,6 +19,7 @@
       "type": "reps",
       "name": "Push-ups",
       "reps": 15,
+      "estimatedDurationSeconds": 45,
       "notes": "Modify on knees if needed"
     },
     {
@@ -31,7 +32,8 @@
       "id": "exercise-2",
       "type": "reps",
       "name": "Dumbbell shoulder press",
-      "reps": 12
+      "reps": 12,
+      "estimatedDurationSeconds": 40
     },
     {
       "id": "rest-2",
@@ -44,6 +46,7 @@
       "type": "reps",
       "name": "Resistance band rows",
       "reps": 15,
+      "estimatedDurationSeconds": 50,
       "notes": "Squeeze shoulder blades together"
     },
     {
@@ -56,7 +59,8 @@
       "id": "exercise-4",
       "type": "reps",
       "name": "Tricep dips",
-      "reps": 12
+      "reps": 12,
+      "estimatedDurationSeconds": 35
     },
     {
       "id": "cooldown",

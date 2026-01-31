@@ -23,7 +23,8 @@
       "id": "squats",
       "type": "reps",
       "name": "Bodyweight squats",
-      "reps": 20
+      "reps": 20,
+      "estimatedDurationSeconds": 60
     },
     {
       "id": "rest-2",
@@ -35,7 +36,8 @@
       "id": "pushups",
       "type": "reps",
       "name": "Push-ups",
-      "reps": 10
+      "reps": 10,
+      "estimatedDurationSeconds": 30
     },
     {
       "id": "rest-3",
@@ -48,6 +50,7 @@
       "type": "reps",
       "name": "Lunges",
       "reps": 16,
+      "estimatedDurationSeconds": 50,
       "notes": "8 per leg"
     },
     {

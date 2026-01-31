@@ -152,14 +152,19 @@ export class WorkoutUI {
     }).join('');
   }
 
-  public showCountdown(onFinish: () => void): void {
+  public showCountdown(onFinish: () => void, firstStep?: FlatStep | null): void {
     this.currentView = 'countdown';
     initSound();
+
+    const nextPreviewHtml = firstStep
+      ? `<div class="next-preview countdown-next-preview">${this.renderNextPreview(firstStep)}</div>`
+      : '';
 
     this.appElement.innerHTML = `
       <div class="countdown">
         <div class="countdown-number" id="countdown-number">3</div>
         <p class="countdown-label">Get ready</p>
+        ${nextPreviewHtml}
       </div>
     `;
 
@@ -279,16 +284,13 @@ export class WorkoutUI {
         : '<div class="complete"><h2>Workout Complete!</h2><p>Great job!</p></div>';
     }
 
-    // Next preview
+    // Next preview (visible during countdowns and reps steps)
     const nextPreview = document.getElementById('next-preview');
     if (nextPreview) {
       if (nextStep) {
-        const meta = nextStep.type === 'timer'
-          ? formatDuration(nextStep.durationSeconds)
-          : `${nextStep.reps} reps`;
-        nextPreview.innerHTML = `<p>Next: <strong>${nextStep.name}</strong> (${meta})</p>`;
+        nextPreview.innerHTML = this.renderNextPreview(nextStep);
       } else {
-        nextPreview.innerHTML = '<p>Last step!</p>';
+        nextPreview.innerHTML = '<p class="next-preview-last">Last step!</p>';
       }
     }
 
@@ -298,6 +300,20 @@ export class WorkoutUI {
       controls.innerHTML = this.renderControls(currentStep, isPaused);
       this.attachControlListeners(currentStep, isPaused);
     }
+  }
+
+  private renderNextPreview(step: FlatStep): string {
+    const meta = step.type === 'timer'
+      ? formatDuration(step.durationSeconds)
+      : `× ${step.reps} reps`;
+    let html = `
+      <p class="next-preview-label">Up next</p>
+      <p class="next-preview-name">${step.name}</p>
+      <p class="next-preview-meta">${meta}</p>`;
+    if (step.notes) {
+      html += `<p class="next-preview-notes">${step.notes}</p>`;
+    }
+    return html;
   }
 
   private renderStep(step: FlatStep, remainingSeconds: number | null): string {

@@ -242,17 +242,48 @@ button:focus-visible {
   margin-bottom: 1rem;
 }
 
-/* Next Preview */
+/* Next Preview (visible during countdowns and reps) */
 .next-preview {
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.03);
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.6);
+  border-left: 4px solid rgba(100, 116, 139, 0.6);
+  text-align: left;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 1rem;
 }
 
-.next-preview strong {
-  color: rgba(255, 255, 255, 0.9);
+.next-preview-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0.25rem;
+}
+
+.next-preview-name {
+  font-weight: 600;
+  font-size: 1.1em;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 0.25rem;
+}
+
+.next-preview-meta {
+  font-size: 0.95em;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0;
+}
+
+.next-preview-notes {
+  font-size: 0.9em;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+.next-preview-last {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 /* Controls */
@@ -407,6 +438,12 @@ button:focus-visible {
   margin-top: 1rem;
   color: rgba(255, 255, 255, 0.6);
   font-size: 1.2em;
+}
+
+.countdown-next-preview {
+  margin-top: 2.5rem;
+  width: 100%;
+  max-width: 400px;
 }
 
 /* Responsive */

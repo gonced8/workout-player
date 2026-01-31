@@ -120,6 +120,11 @@
           "minimum": 1,
           "description": "Number of repetitions"
         },
+        "estimatedDurationSeconds": {
+          "type": "number",
+          "minimum": 1,
+          "description": "Optional estimated duration in seconds for total workout time estimation"
+        },
         "notes": {
           "type": "string",
           "description": "Optional coaching cues or notes"
