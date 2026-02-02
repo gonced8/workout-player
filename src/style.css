@@ -448,6 +448,15 @@ button:focus-visible {
   font-size: 1.2em;
 }
 
+.silent-mode-hint {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 200, 50, 0.15);
+  border-radius: 6px;
+  color: rgba(255, 200, 50, 0.9);
+  font-size: 0.85em;
+}
+
 .countdown-next-preview {
   margin-top: 2.5rem;
   width: 100%;

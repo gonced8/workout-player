@@ -164,10 +164,17 @@ export class WorkoutUI {
       ? `<div class="next-preview countdown-next-preview">${this.renderNextPreview(firstStep)}</div>`
       : '';
 
+    // Show silent mode warning on iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const silentModeHint = isIOS
+      ? '<p class="silent-mode-hint">Turn off silent mode for audio cues</p>'
+      : '';
+
     this.appElement.innerHTML = `
       <div class="countdown">
         <div class="countdown-number" id="countdown-number">3</div>
         <p class="countdown-label">Get ready</p>
+        ${silentModeHint}
         ${nextPreviewHtml}
       </div>
     `;
