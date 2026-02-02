@@ -47,6 +47,8 @@ export class WorkoutUI {
           <button id="load-sample-btn" class="secondary">Load Sample</button>
           <button id="start-btn" class="primary">Validate & Preview</button>
         </div>
+
+        <div class="version">v${__APP_VERSION__}</div>
       </div>
     `;
 
@@ -122,24 +124,25 @@ export class WorkoutUI {
   }
 
   private renderPreviewStepsTree(steps: Step[]): string {
-    return steps.map((step) => {
-      if (step.type === 'timer') {
-        return `
+    return steps
+      .map((step) => {
+        if (step.type === 'timer') {
+          return `
           <li class="preview-step preview-step-timer">
             <span class="preview-step-name">${step.name}</span>
             <span class="preview-step-meta">${formatDuration(step.durationSeconds)}</span>
           </li>`;
-      }
-      if (step.type === 'reps') {
-        return `
+        }
+        if (step.type === 'reps') {
+          return `
           <li class="preview-step preview-step-reps">
             <span class="preview-step-name">${step.name}</span>
             <span class="preview-step-meta">× ${step.reps} reps</span>
           </li>`;
-      }
-      // Group
-      const roundsLabel = step.rounds === 1 ? '1 round' : `${step.rounds} rounds`;
-      return `
+        }
+        // Group
+        const roundsLabel = step.rounds === 1 ? '1 round' : `${step.rounds} rounds`;
+        return `
         <li class="preview-step preview-step-group">
           <div class="preview-group-header">
             <span class="preview-group-name">${step.name}</span>
@@ -149,7 +152,8 @@ export class WorkoutUI {
             ${this.renderPreviewStepsTree(step.steps)}
           </ul>
         </li>`;
-    }).join('');
+      })
+      .join('');
   }
 
   public showCountdown(onFinish: () => void, firstStep?: FlatStep | null): void {
@@ -303,9 +307,8 @@ export class WorkoutUI {
   }
 
   private renderNextPreview(step: FlatStep): string {
-    const meta = step.type === 'timer'
-      ? formatDuration(step.durationSeconds)
-      : `× ${step.reps} reps`;
+    const meta =
+      step.type === 'timer' ? formatDuration(step.durationSeconds) : `× ${step.reps} reps`;
     let html = `
       <p class="next-preview-label">Up next</p>
       <p class="next-preview-name">${step.name}</p>
@@ -321,7 +324,9 @@ export class WorkoutUI {
 
     if (step.roundContext) {
       const { groupName, currentRound, totalRounds } = step.roundContext;
-      parts.push(`<div class="round-context">${groupName} — Round ${currentRound} of ${totalRounds}</div>`);
+      parts.push(
+        `<div class="round-context">${groupName} — Round ${currentRound} of ${totalRounds}</div>`
+      );
     }
 
     parts.push(`<h2 class="step-name">${step.name}</h2>`);

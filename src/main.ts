@@ -23,14 +23,28 @@ const sampleWorkout = {
       rounds: 3,
       skipLastRest: true,
       steps: [
-        { id: 'c1-pushups', type: 'reps', name: 'Push-ups', reps: 10, estimatedDurationSeconds: 30, notes: 'Keep your core tight' },
+        {
+          id: 'c1-pushups',
+          type: 'reps',
+          name: 'Push-ups',
+          reps: 10,
+          estimatedDurationSeconds: 30,
+          notes: 'Keep your core tight',
+        },
         { id: 'c1-rest1', type: 'timer', name: 'Rest', durationSeconds: 30 },
-        { id: 'c1-squats', type: 'reps', name: 'Squats', reps: 12, estimatedDurationSeconds: 40, notes: 'Go deep!' },
-        { id: 'c1-rest2', type: 'timer', name: 'Rest', durationSeconds: 30 }
-      ]
+        {
+          id: 'c1-squats',
+          type: 'reps',
+          name: 'Squats',
+          reps: 12,
+          estimatedDurationSeconds: 40,
+          notes: 'Go deep!',
+        },
+        { id: 'c1-rest2', type: 'timer', name: 'Rest', durationSeconds: 30 },
+      ],
     },
-    { id: 'cooldown', type: 'timer', name: 'Cool down', durationSeconds: 60 }
-  ]
+    { id: 'cooldown', type: 'timer', name: 'Cool down', durationSeconds: 60 },
+  ],
 };
 
 function init(): void {

@@ -114,7 +114,7 @@ function flattenStep(step: Step, result: FlatStep[], roundContext?: RoundContext
     // Timer or reps step - add directly
     const flatStep: FlatStep = {
       ...step,
-      roundContext
+      roundContext,
     };
     result.push(flatStep);
   }
@@ -124,7 +124,7 @@ function flattenGroup(group: GroupStep, result: FlatStep[]): void {
   const roundContext: RoundContext = {
     groupName: group.name,
     currentRound: 1,
-    totalRounds: group.rounds
+    totalRounds: group.rounds,
   };
 
   for (let round = 1; round <= group.rounds; round++) {

@@ -1,7 +1,12 @@
 import type { Workout, FlatStep, PlayerState } from './types';
 import { flattenSteps } from './workout';
 import { playCompletionSound, playCountdownBeep, initSound } from './sound';
-import { requestWakeLock, releaseWakeLock, setWorkoutActive, setupVisibilityHandler } from './wakeLock';
+import {
+  requestWakeLock,
+  releaseWakeLock,
+  setWorkoutActive,
+  setupVisibilityHandler,
+} from './wakeLock';
 
 export class WorkoutPlayer {
   private state: PlayerState;
@@ -23,7 +28,7 @@ export class WorkoutPlayer {
       isPaused: false,
       stepStartedAt: null,
       timerDuration: null,
-      remainingSeconds: null
+      remainingSeconds: null,
     };
   }
 
@@ -45,7 +50,7 @@ export class WorkoutPlayer {
     this.state = {
       ...this.createInitialState(),
       workout,
-      flatSteps: flattenSteps(workout)
+      flatSteps: flattenSteps(workout),
     };
     this.notifyStateChange();
   }
@@ -71,7 +76,11 @@ export class WorkoutPlayer {
     this.clearTimer();
 
     const currentStep = this.getCurrentStep();
-    if (currentStep?.type === 'timer' && this.state.stepStartedAt !== null && this.state.timerDuration !== null) {
+    if (
+      currentStep?.type === 'timer' &&
+      this.state.stepStartedAt !== null &&
+      this.state.timerDuration !== null
+    ) {
       const elapsed = (Date.now() - this.state.stepStartedAt) / 1000;
       this.state.remainingSeconds = Math.max(0, this.state.timerDuration - elapsed);
       this.state.timerDuration = this.state.remainingSeconds;

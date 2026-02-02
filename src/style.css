@@ -1,5 +1,7 @@
 :root {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+    'Helvetica Neue', sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -47,6 +49,12 @@ body {
 .landing>p {
   color: rgba(255, 255, 255, 0.6);
   margin-bottom: 2rem;
+}
+
+.version {
+  margin-top: 2rem;
+  font-size: 0.75em;
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .input-section {
