@@ -39,28 +39,34 @@ npm run build
 npm run preview
 ```
 
-## Deploy to Cloudflare Pages
+## Deploy to GitHub Pages
 
-### Option 1: Wrangler CLI
+The repo includes [`.github/workflows/pages.yml`](.github/workflows/pages.yml), which builds with Vite and deploys the `dist` output on every push to `main`.
+
+1. In the GitHub repo, go to **Settings → Pages**.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions** (not “Deploy from a branch”).
+3. Under **Custom domain**, enter `workout.goncaloraposo.com` and follow GitHub’s DNS checks ([Managing a custom domain](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site)).
+4. Push to `main`; the **Deploy to GitHub Pages** workflow publishes the site.
+
+**Custom domain** (`https://workout.goncaloraposo.com/`): the workflow sets `VITE_BASE=/` so asset URLs match the domain root. [`public/CNAME`](public/CNAME) is copied into `dist` so the hostname stays configured on deploy.
+
+**Default GitHub Pages URL** (`https://<user>.github.io/<repo>/`): remove the `VITE_BASE: /` env block from [`.github/workflows/pages.yml`](.github/workflows/pages.yml) and delete `public/CNAME` so the build uses the repo-based base from [`vite.config.ts`](vite.config.ts).
+
+**Local build matching production** (custom domain):
 
 ```bash
-# Build the app
-npm run build
-
-# Deploy to Cloudflare Pages
-npx wrangler pages deploy dist --project-name=workout-player
+VITE_BASE=/ npm run build
 ```
 
-### Option 2: Git Integration
+**Local build matching** `*.github.io/<repo>/`:
 
-1. Push this repository to GitHub/GitLab
-2. Connect to Cloudflare Pages from the dashboard
-3. Set build configuration:
-   - **Build command**: `npm run build`
-   - **Build output directory**: `dist`
-   - **Root directory**: (leave empty or set to repo root)
+```bash
+GITHUB_REPOSITORY=yourname/your-repo npm run build
+```
 
-The `wrangler.json` file is already configured with `pages_build_output_dir: "./dist"`.
+### Cloudflare Pages (optional)
+
+You can still deploy `dist` to Cloudflare Pages with root URL `npm run build` (default base `/`) or set `VITE_BASE` if the app is hosted under a subpath. The `wrangler.json` file keeps `pages_build_output_dir: "./dist"` for Wrangler.
 
 ## Usage
 
