@@ -1,6 +1,6 @@
 import type { Workout, FlatStep, PlayerState } from './types';
 import { flattenSteps } from './workout';
-import { playCompletionSound, playCountdownBeep, initSound } from './sound';
+import { playCompletionSound, playCountdownBeep, initSound, resumeAudioContext } from './sound';
 import {
   requestWakeLock,
   releaseWakeLock,
@@ -220,6 +220,7 @@ export class WorkoutPlayer {
   private setupVisibilityListener(): void {
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible' && this.state.isPlaying && !this.state.isPaused) {
+        resumeAudioContext();
         const currentStep = this.getCurrentStep();
         if (currentStep?.type === 'timer') {
           const remaining = this.computeRemaining();

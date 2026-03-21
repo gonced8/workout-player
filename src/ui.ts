@@ -24,9 +24,34 @@ export class WorkoutUI {
   public showLanding(
     onPreview: (json: string) => void,
     onLoadSample: () => void,
-    initialJson?: string
+    initialJson?: string,
+    workoutSchemaJson?: string
   ): void {
     this.currentView = 'landing';
+    const schemaButton =
+      workoutSchemaJson !== undefined
+        ? `<button type="button" id="view-schema-btn" class="secondary">View JSON Schema</button>`
+        : '';
+
+    const schemaDialog =
+      workoutSchemaJson !== undefined
+        ? `
+        <dialog id="schema-dialog" class="schema-dialog">
+          <div class="schema-dialog-panel">
+            <div class="schema-dialog-header">
+              <h2 class="schema-dialog-title">Workout JSON Schema</h2>
+              <div class="schema-dialog-actions">
+                <button type="button" id="schema-dialog-copy" class="primary">Copy</button>
+                <button type="button" id="schema-dialog-close" class="secondary">Close</button>
+              </div>
+            </div>
+            <div class="schema-dialog-body">
+              <pre class="schema-dialog-pre"><code id="schema-dialog-code"></code></pre>
+            </div>
+          </div>
+        </dialog>`
+        : '';
+
     this.appElement.innerHTML = `
       <div class="landing">
         <h1>Workout Player</h1>
@@ -44,13 +69,71 @@ export class WorkoutUI {
         </div>
 
         <div class="button-group">
-          <button id="load-sample-btn" class="secondary">Load Sample</button>
+          <button type="button" id="load-sample-btn" class="secondary">Load Sample</button>
+          ${schemaButton}
           <button id="start-btn" class="primary">Validate & Preview</button>
         </div>
+        ${schemaDialog}
 
         <div class="version">v${__APP_VERSION__}</div>
       </div>
     `;
+
+    if (workoutSchemaJson !== undefined) {
+      const codeEl = document.getElementById('schema-dialog-code');
+      if (codeEl) {
+        codeEl.textContent = workoutSchemaJson;
+      }
+
+      const dialog = document.getElementById('schema-dialog') as HTMLDialogElement | null;
+      const copyBtn = document.getElementById('schema-dialog-copy') as HTMLButtonElement | null;
+      const defaultCopyLabel = 'Copy';
+
+      const copySchemaToClipboard = async (): Promise<boolean> => {
+        try {
+          if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(workoutSchemaJson);
+            return true;
+          }
+        } catch {
+          /* fall through */
+        }
+        const ta = document.createElement('textarea');
+        ta.value = workoutSchemaJson;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          return document.execCommand('copy');
+        } catch {
+          return false;
+        } finally {
+          document.body.removeChild(ta);
+        }
+      };
+
+      document.getElementById('view-schema-btn')?.addEventListener('click', () => {
+        dialog?.showModal();
+      });
+
+      document.getElementById('schema-dialog-close')?.addEventListener('click', () => {
+        dialog?.close();
+      });
+
+      copyBtn?.addEventListener('click', () => {
+        void copySchemaToClipboard().then((ok) => {
+          if (!copyBtn) return;
+          if (ok) {
+            copyBtn.textContent = 'Copied!';
+            window.setTimeout(() => {
+              copyBtn.textContent = defaultCopyLabel;
+            }, 2000);
+          }
+        });
+      });
+    }
 
     const textarea = document.getElementById('workout-json') as HTMLTextAreaElement;
     const errorEl = document.getElementById('error-message') as HTMLDivElement;
@@ -103,6 +186,7 @@ export class WorkoutUI {
     this.currentView = 'preview';
     const duration = estimateDuration(flatSteps);
 
+    const hasNotesInTree = this.stepsTreeHasNotes(workout.steps);
     this.appElement.innerHTML = `
       <div class="preview">
         <h1 class="preview-title">${workout.title}</h1>
@@ -112,6 +196,11 @@ export class WorkoutUI {
         <ul class="preview-steps">
           ${this.renderPreviewStepsTree(workout.steps)}
         </ul>
+        ${
+          hasNotesInTree
+            ? '<p class="preview-notes-hint">Tap a step with notes to see coaching cues.</p>'
+            : ''
+        }
         <div class="preview-actions">
           <button id="preview-back-btn" class="secondary large">Back to edit</button>
           <button id="preview-start-btn" class="primary large">Start workout</button>
@@ -123,10 +212,30 @@ export class WorkoutUI {
     document.getElementById('preview-start-btn')?.addEventListener('click', onStart);
   }
 
+  private stepsTreeHasNotes(steps: Step[]): boolean {
+    for (const step of steps) {
+      if (step.notes) return true;
+      if (step.type === 'group' && this.stepsTreeHasNotes(step.steps)) return true;
+    }
+    return false;
+  }
+
   private renderPreviewStepsTree(steps: Step[]): string {
     return steps
       .map((step) => {
         if (step.type === 'timer') {
+          if (step.notes) {
+            return `
+          <li class="preview-step preview-step-timer preview-step-expandable">
+            <details class="preview-step-details">
+              <summary class="preview-step-summary">
+                <span class="preview-step-name">${step.name}</span>
+                <span class="preview-step-meta">${formatDuration(step.durationSeconds)}</span>
+              </summary>
+              <p class="preview-step-notes">${step.notes}</p>
+            </details>
+          </li>`;
+          }
           return `
           <li class="preview-step preview-step-timer">
             <span class="preview-step-name">${step.name}</span>
@@ -134,14 +243,40 @@ export class WorkoutUI {
           </li>`;
         }
         if (step.type === 'reps') {
+          if (step.notes) {
+            return `
+          <li class="preview-step preview-step-reps preview-step-expandable">
+            <details class="preview-step-details">
+              <summary class="preview-step-summary">
+                <span class="preview-step-name">${step.name}</span>
+                <span class="preview-step-meta">× ${step.reps} reps</span>
+              </summary>
+              <p class="preview-step-notes">${step.notes}</p>
+            </details>
+          </li>`;
+          }
           return `
           <li class="preview-step preview-step-reps">
             <span class="preview-step-name">${step.name}</span>
             <span class="preview-step-meta">× ${step.reps} reps</span>
           </li>`;
         }
-        // Group
         const roundsLabel = step.rounds === 1 ? '1 round' : `${step.rounds} rounds`;
+        if (step.notes) {
+          return `
+        <li class="preview-step preview-step-group">
+          <details class="preview-group-details">
+            <summary class="preview-group-header preview-group-summary">
+              <span class="preview-group-name">${step.name}</span>
+              <span class="preview-group-rounds">× ${roundsLabel}</span>
+            </summary>
+            <p class="preview-step-notes preview-group-notes">${step.notes}</p>
+          </details>
+          <ul class="preview-group-steps">
+            ${this.renderPreviewStepsTree(step.steps)}
+          </ul>
+        </li>`;
+        }
         return `
         <li class="preview-step preview-step-group">
           <div class="preview-group-header">
