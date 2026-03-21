@@ -20,7 +20,10 @@ function ensureContextResumed(fn: () => void): void {
   if (!ctx) return;
 
   if (contextNeedsResume(ctx.state)) {
-    void ctx.resume().then(fn).catch(() => {});
+    void ctx
+      .resume()
+      .then(fn)
+      .catch(() => {});
     return;
   }
 
