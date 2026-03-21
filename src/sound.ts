@@ -73,4 +73,3 @@ export function playCountdownBeep(): void {
   playBeep({ frequency: 1000, duration: 0.1, volume: 0.3 });
   vibrate(100);
 }
-
