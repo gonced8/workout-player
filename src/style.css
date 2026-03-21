@@ -1,4 +1,8 @@
 :root {
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+
   font-family:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
     'Helvetica Neue', sans-serif;
@@ -46,7 +50,7 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.landing > p {
+.landing>p {
   color: rgba(255, 255, 255, 0.6);
   margin-bottom: 2rem;
 }
@@ -55,6 +59,92 @@ body {
   margin-top: 2rem;
   font-size: 0.75em;
   color: rgba(255, 255, 255, 0.3);
+}
+
+/* Schema dialog (landing) — reset .landing text-align:center */
+.schema-dialog {
+  padding: 0;
+  border: none;
+  position: fixed;
+  inset: 0;
+  width: min(600px, calc(100vw - 2rem));
+  max-width: calc(100vw - 2rem);
+  max-height: calc(100vh - 2rem);
+  height: fit-content;
+  margin: auto;
+  background: transparent;
+  text-align: left;
+}
+
+.schema-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.schema-dialog-panel {
+  background: #2a2a2a;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  max-height: min(90vh, calc(100vh - 2rem));
+}
+
+.schema-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.schema-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.schema-dialog-title {
+  font-size: 1.15rem;
+  margin: 0;
+  font-weight: 600;
+  text-align: left;
+}
+
+.schema-dialog-body {
+  padding: 0;
+  flex: 1;
+  min-height: 0;
+}
+
+.schema-dialog-pre {
+  margin: 0;
+  max-height: 60vh;
+  overflow: auto;
+  padding: 1rem 1.25rem;
+  font-size: 0.75rem;
+  line-height: normal;
+  background: rgba(0, 0, 0, 0.25);
+  font-family: var(--font-mono);
+  white-space: pre;
+  word-wrap: normal;
+  overflow-wrap: normal;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.schema-dialog-pre code {
+  display: block;
+  text-align: left;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: inherit;
 }
 
 .input-section {
@@ -71,7 +161,7 @@ body {
 textarea {
   width: 100%;
   padding: 1rem;
-  font-family: 'Courier New', monospace;
+  font-family: var(--font-mono);
   font-size: 0.9em;
   background: rgba(255, 255, 255, 0.05);
   border: 2px solid rgba(255, 255, 255, 0.1);
@@ -226,7 +316,7 @@ button:focus-visible {
 .timer {
   font-size: 4em;
   font-weight: bold;
-  font-family: 'Courier New', monospace;
+  font-family: var(--font-mono);
   color: #646cff;
   margin: 1rem 0;
 }
@@ -334,6 +424,70 @@ button:focus-visible {
   font-weight: 600;
   text-align: center;
   margin-bottom: 1.5rem;
+}
+
+.preview-notes-hint {
+  text-align: center;
+  font-size: 0.85em;
+  color: rgba(255, 255, 255, 0.45);
+  margin: -1rem 0 1.5rem;
+}
+
+.preview-step-expandable {
+  display: block;
+}
+
+.preview-step-details {
+  width: 100%;
+}
+
+.preview-step-summary {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+}
+
+.preview-step-summary::-webkit-details-marker {
+  display: none;
+}
+
+.preview-step-summary::marker {
+  content: '';
+}
+
+.preview-step-notes {
+  grid-column: 1 / -1;
+  margin-top: 0.5rem;
+  padding: 0;
+  font-size: 0.9em;
+  color: rgba(255, 255, 255, 0.65);
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.preview-group-details {
+  margin-bottom: 0.5rem;
+}
+
+.preview-group-summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.preview-group-summary::-webkit-details-marker {
+  display: none;
+}
+
+.preview-group-summary::marker {
+  content: '';
+}
+
+.preview-group-notes {
+  margin-top: 0.5rem;
+  padding: 0;
 }
 
 .preview-steps {

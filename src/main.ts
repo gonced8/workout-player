@@ -3,6 +3,9 @@ import { WorkoutPlayer } from './player';
 import { WorkoutUI } from './ui';
 import { parseWorkout, flattenSteps } from './workout';
 import type { Workout } from './types';
+import workoutPlaybackSchema from '../docs/workout-playback-schema.json';
+
+const WORKOUT_SCHEMA_JSON = JSON.stringify(workoutPlaybackSchema, null, 2);
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 const player = new WorkoutPlayer();
@@ -48,7 +51,7 @@ const sampleWorkout = {
 };
 
 function init(): void {
-  ui.showLanding(handlePreview, handleLoadSample);
+  ui.showLanding(handlePreview, handleLoadSample, undefined, WORKOUT_SCHEMA_JSON);
 }
 
 function handlePreview(json: string): void {
@@ -59,7 +62,7 @@ function handlePreview(json: string): void {
     ui.showPreview(
       workout,
       flatSteps,
-      () => ui.showLanding(handlePreview, handleLoadSample, json),
+      () => ui.showLanding(handlePreview, handleLoadSample, json, WORKOUT_SCHEMA_JSON),
       () => ui.showCountdown(() => startWorkout(workout), flatSteps[0] ?? null)
     );
   } catch (error) {

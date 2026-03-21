@@ -10,13 +10,40 @@ function getAudioContext(): AudioContext | null {
   return audioContext;
 }
 
+function contextNeedsResume(state: AudioContextState | string): boolean {
+  return state === 'suspended' || state === 'interrupted';
+}
+
+/** Run callback after AudioContext is running (iOS suspends/interrupts in background). */
+function ensureContextResumed(fn: () => void): void {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  if (contextNeedsResume(ctx.state)) {
+    void ctx.resume().then(fn).catch(() => {});
+    return;
+  }
+
+  fn();
+}
+
 // Call during user interaction to unlock audio on iOS
 export function initSound(): void {
   const ctx = getAudioContext();
   if (!ctx) return;
 
-  if (ctx.state === 'suspended') {
-    ctx.resume();
+  if (contextNeedsResume(ctx.state)) {
+    void ctx.resume().catch(() => {});
+  }
+}
+
+/** Pre-warm context when returning to the tab mid-workout (e.g. after minimize on iOS). */
+export function resumeAudioContext(): void {
+  const ctx = getAudioContext();
+  if (!ctx || ctx.state === 'closed') return;
+
+  if (contextNeedsResume(ctx.state)) {
+    void ctx.resume().catch(() => {});
   }
 }
 
@@ -27,31 +54,29 @@ interface BeepOptions {
 }
 
 function playBeep({ frequency, duration, volume }: BeepOptions): void {
-  const ctx = getAudioContext();
-  if (!ctx) return;
+  ensureContextResumed(() => {
+    const ctx = getAudioContext();
+    if (!ctx || ctx.state !== 'running') return;
 
-  if (ctx.state === 'suspended') {
-    ctx.resume();
-  }
+    try {
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
 
-  try {
-    const oscillator = ctx.createOscillator();
-    const gainNode = ctx.createGain();
+      oscillator.connect(gainNode);
+      gainNode.connect(ctx.destination);
 
-    oscillator.connect(gainNode);
-    gainNode.connect(ctx.destination);
+      oscillator.frequency.value = frequency;
+      oscillator.type = 'sine';
 
-    oscillator.frequency.value = frequency;
-    oscillator.type = 'sine';
+      gainNode.gain.setValueAtTime(volume, ctx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
 
-    gainNode.gain.setValueAtTime(volume, ctx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-
-    oscillator.start(ctx.currentTime);
-    oscillator.stop(ctx.currentTime + duration);
-  } catch {
-    // Ignore audio errors
-  }
+      oscillator.start(ctx.currentTime);
+      oscillator.stop(ctx.currentTime + duration);
+    } catch {
+      // Ignore audio errors
+    }
+  });
 }
 
 function vibrate(pattern: number | number[]): void {

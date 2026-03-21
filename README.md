@@ -68,7 +68,8 @@ The `wrangler.json` file is already configured with `pages_build_output_dir: "./
 
 1. **Paste JSON**: Copy workout JSON and paste into the textarea
 2. **Load Sample**: Click "Load Sample" to see an example workout
-3. **Start**: Click "Validate & Start" to begin
+3. **JSON Schema**: Click "View JSON Schema" to open a dialog with the full JSON Schema (for LLM prompts); use **Copy** to put it on the clipboard
+4. **Start**: Click "Validate & Preview" to review the workout, then start from the preview screen
 
 ### During a Workout
 
