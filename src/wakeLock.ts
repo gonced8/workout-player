@@ -7,7 +7,13 @@ export async function requestWakeLock(): Promise<boolean> {
   }
 
   try {
-    wakeLock = await navigator.wakeLock.request('screen');
+    const sentinel = await navigator.wakeLock.request('screen');
+    wakeLock = sentinel;
+    sentinel.addEventListener('release', () => {
+      if (wakeLock === sentinel) {
+        wakeLock = null;
+      }
+    });
     return true;
   } catch {
     return false;
