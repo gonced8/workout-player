@@ -13,7 +13,15 @@ export interface RecentWorkout {
   workout: Workout;
 }
 
-function isRecentWorkout(value: unknown): value is RecentWorkout {
+interface StoredRecentWorkout {
+  id: string;
+  title: string;
+  lastPlayedAt?: string;
+  savedAt?: string;
+  workout: Workout;
+}
+
+function isStoredRecentWorkout(value: unknown): value is StoredRecentWorkout {
   if (!value || typeof value !== 'object') return false;
   const candidate = value as Partial<RecentWorkout>;
   return (
@@ -61,7 +69,13 @@ function getWorkoutId(workout: Workout): string {
   );
 }
 
-function normalizeRecentWorkout(entry: RecentWorkout): RecentWorkout {
+function getTimestamp(value: string | undefined): number {
+  if (!value) return 0;
+  const timestamp = new Date(value).getTime();
+  return Number.isNaN(timestamp) ? 0 : timestamp;
+}
+
+function normalizeRecentWorkout(entry: StoredRecentWorkout): RecentWorkout {
   return {
     ...entry,
     id: getWorkoutId(entry.workout),
@@ -80,15 +94,15 @@ export function loadRecentWorkouts(): RecentWorkout[] {
     if (!Array.isArray(parsed)) return [];
 
     return parsed
-      .filter(isRecentWorkout)
+      .filter(isStoredRecentWorkout)
       .map(normalizeRecentWorkout)
+      .sort(
+        (workoutA, workoutB) =>
+          getTimestamp(workoutB.lastPlayedAt) - getTimestamp(workoutA.lastPlayedAt)
+      )
       .filter(
         (entry, index, recentWorkouts) =>
           recentWorkouts.findIndex((candidate) => candidate.id === entry.id) === index
-      )
-      .sort(
-        (workoutA, workoutB) =>
-          new Date(workoutB.lastPlayedAt).getTime() - new Date(workoutA.lastPlayedAt).getTime()
       )
       .slice(0, MAX_RECENT_WORKOUTS);
   } catch {
