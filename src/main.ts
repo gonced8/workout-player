@@ -3,6 +3,7 @@ import { WorkoutPlayer } from './player';
 import { WorkoutUI } from './ui';
 import { parseWorkout, flattenSteps } from './workout';
 import type { Workout } from './types';
+import { loadRecentWorkouts, saveRecentWorkout } from './storage';
 import workoutPlaybackSchema from '../docs/workout-playback-schema.json';
 
 const WORKOUT_SCHEMA_JSON = JSON.stringify(workoutPlaybackSchema, null, 2);
@@ -51,7 +52,14 @@ const sampleWorkout = {
 };
 
 function init(): void {
-  ui.showLanding(handlePreview, handleLoadSample, undefined, WORKOUT_SCHEMA_JSON);
+  ui.showLanding(
+    handlePreview,
+    handleLoadSample,
+    handleLoadRecent,
+    loadRecentWorkouts(),
+    undefined,
+    WORKOUT_SCHEMA_JSON
+  );
 }
 
 function handlePreview(json: string): void {
@@ -62,7 +70,15 @@ function handlePreview(json: string): void {
     ui.showPreview(
       workout,
       flatSteps,
-      () => ui.showLanding(handlePreview, handleLoadSample, json, WORKOUT_SCHEMA_JSON),
+      () =>
+        ui.showLanding(
+          handlePreview,
+          handleLoadSample,
+          handleLoadRecent,
+          loadRecentWorkouts(),
+          json,
+          WORKOUT_SCHEMA_JSON
+        ),
       () => ui.showCountdown(() => startWorkout(workout), flatSteps[0] ?? null)
     );
   } catch (error) {
@@ -71,6 +87,7 @@ function handlePreview(json: string): void {
 }
 
 function startWorkout(workout: Workout): void {
+  saveRecentWorkout(workout);
   player.loadWorkout(workout);
   player.start();
 
@@ -91,6 +108,10 @@ function startWorkout(workout: Workout): void {
 
 function handleLoadSample(): void {
   ui.loadSampleIntoTextarea(JSON.stringify(sampleWorkout, null, 2));
+}
+
+function handleLoadRecent(workout: Workout): void {
+  handlePreview(JSON.stringify(workout, null, 2));
 }
 
 function handleEndWorkout(): void {
