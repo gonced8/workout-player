@@ -1,4 +1,5 @@
 import type { PlayerState, FlatStep, Workout, Step } from './types';
+import type { RecentWorkout } from './storage';
 import { formatTime, formatDuration, flattenSteps, estimateDuration } from './workout';
 import { playCountdownBeep, playCompletionSound, initSound } from './sound';
 
@@ -24,6 +25,8 @@ export class WorkoutUI {
   public showLanding(
     onPreview: (json: string) => void,
     onLoadSample: () => void,
+    onLoadRecent: (workout: Workout) => void,
+    recentWorkouts: RecentWorkout[] = [],
     initialJson?: string,
     workoutSchemaJson?: string
   ): void {
@@ -32,6 +35,8 @@ export class WorkoutUI {
       workoutSchemaJson !== undefined
         ? `<button type="button" id="view-schema-btn" class="secondary">View JSON Schema</button>`
         : '';
+
+    const recentWorkoutsHtml = this.renderRecentWorkouts(recentWorkouts);
 
     const schemaDialog =
       workoutSchemaJson !== undefined
@@ -67,6 +72,8 @@ export class WorkoutUI {
           <div id="duration-estimate"></div>
           <div id="error-message" class="error"></div>
         </div>
+
+        ${recentWorkoutsHtml}
 
         <div class="button-group">
           <button type="button" id="load-sample-btn" class="secondary">Load Sample</button>
@@ -175,6 +182,48 @@ export class WorkoutUI {
     });
 
     document.getElementById('load-sample-btn')?.addEventListener('click', onLoadSample);
+
+    recentWorkouts.forEach((recentWorkout, index) => {
+      document
+        .getElementById(`recent-workout-${index}`)
+        ?.addEventListener('click', () => onLoadRecent(recentWorkout.workout));
+    });
+  }
+
+  private renderRecentWorkouts(recentWorkouts: RecentWorkout[]): string {
+    if (recentWorkouts.length === 0) return '';
+
+    return `
+      <section class="recent-workouts" aria-labelledby="recent-workouts-title">
+        <h2 id="recent-workouts-title">Recent workouts</h2>
+        <p>Resume or repeat one of your last ${recentWorkouts.length} workouts.</p>
+        <div class="recent-workout-list">
+          ${recentWorkouts
+            .map(
+              (recentWorkout, index) => `
+              <button type="button" id="recent-workout-${index}" class="recent-workout-card">
+                <span class="recent-workout-title">${this.escapeHtml(recentWorkout.title)}</span>
+                <span class="recent-workout-date">${this.formatSavedAt(recentWorkout.savedAt)}</span>
+              </button>`
+            )
+            .join('')}
+        </div>
+      </section>`;
+  }
+
+  private formatSavedAt(savedAt: string): string {
+    const date = new Date(savedAt);
+    if (Number.isNaN(date.getTime())) return 'Saved locally';
+    return `Saved ${date.toLocaleDateString([], { month: 'short', day: 'numeric' })} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+  }
+
+  private escapeHtml(value: string): string {
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   }
 
   public showPreview(
