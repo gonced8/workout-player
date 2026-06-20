@@ -47,4 +47,5 @@ jobs:
           preview-branch: gh-pages
           umbrella-dir: pr-preview
           pages-base-url: workout.goncaloraposo.com
+          wait-for-pages-deployment: true
           qr-code: true
