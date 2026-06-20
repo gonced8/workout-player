@@ -668,3 +668,55 @@ button:focus-visible {
     border-color: #646cff;
   }
 }
+
+/* Recent workouts */
+.recent-workouts {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  text-align: left;
+}
+
+.recent-workouts h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.recent-workouts p {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.recent-workout-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.recent-workout-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  width: 100%;
+  text-align: left;
+  background: rgba(100, 108, 255, 0.08);
+  border-color: rgba(100, 108, 255, 0.25);
+}
+
+.recent-workout-card:hover {
+  background: rgba(100, 108, 255, 0.14);
+  border-color: #646cff;
+}
+
+.recent-workout-title {
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.recent-workout-date {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.82rem;
+}
