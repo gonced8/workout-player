@@ -1,5 +1,6 @@
 let wakeLock: WakeLockSentinel | null = null;
 let isWorkoutActive = false;
+let hasInstalledVisibilityHandler = false;
 
 export async function requestWakeLock(): Promise<boolean> {
   if (!('wakeLock' in navigator)) {
@@ -36,10 +37,21 @@ export function setWorkoutActive(active: boolean): void {
   isWorkoutActive = active;
 }
 
+async function restoreWakeLockIfNeeded(): Promise<void> {
+  if (document.visibilityState === 'visible' && isWorkoutActive && !wakeLock) {
+    await requestWakeLock();
+  }
+}
+
 export function setupVisibilityHandler(): void {
-  document.addEventListener('visibilitychange', async () => {
-    if (document.visibilityState === 'visible' && isWorkoutActive && !wakeLock) {
-      await requestWakeLock();
-    }
-  });
+  if (hasInstalledVisibilityHandler) return;
+  hasInstalledVisibilityHandler = true;
+
+  const restore = (): void => {
+    void restoreWakeLockIfNeeded();
+  };
+
+  document.addEventListener('visibilitychange', restore);
+  window.addEventListener('pageshow', restore);
+  window.addEventListener('focus', restore);
 }
