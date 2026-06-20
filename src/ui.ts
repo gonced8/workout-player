@@ -203,7 +203,7 @@ export class WorkoutUI {
               (recentWorkout, index) => `
               <button type="button" id="recent-workout-${index}" class="recent-workout-card">
                 <span class="recent-workout-title">${this.escapeHtml(recentWorkout.title)}</span>
-                <span class="recent-workout-date">${this.formatSavedAt(recentWorkout.savedAt)}</span>
+                <span class="recent-workout-date">${this.formatLastPlayedAt(recentWorkout.lastPlayedAt)}</span>
               </button>`
             )
             .join('')}
@@ -211,10 +211,10 @@ export class WorkoutUI {
       </section>`;
   }
 
-  private formatSavedAt(savedAt: string): string {
-    const date = new Date(savedAt);
-    if (Number.isNaN(date.getTime())) return 'Saved locally';
-    return `Saved ${date.toLocaleDateString([], { month: 'short', day: 'numeric' })} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+  private formatLastPlayedAt(lastPlayedAt: string): string {
+    const date = new Date(lastPlayedAt);
+    if (Number.isNaN(date.getTime())) return 'Played locally';
+    return `Last played ${date.toLocaleDateString([], { month: 'short', day: 'numeric' })} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
   }
 
   private escapeHtml(value: string): string {
