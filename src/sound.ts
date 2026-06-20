@@ -1,17 +1,93 @@
 // Sound and haptic feedback for workout player
 // Uses Web Audio API for sounds (note: muted in iOS silent mode)
 
+type AudioContextConstructor = typeof AudioContext;
+type SafariAudioContextState = AudioContextState | 'interrupted';
+
+interface WindowWithWebKitAudioContext extends Window {
+  webkitAudioContext?: AudioContextConstructor;
+}
+
 let audioContext: AudioContext | null = null;
+let hasInstalledUnlockListeners = false;
+let resumeTimeoutId: number | null = null;
+let pendingAudioCallbacks: Array<() => void> = [];
+
+function contextNeedsResume(state: SafariAudioContextState | string): boolean {
+  return state === 'suspended' || state === 'interrupted';
+}
+
+function getAudioContextConstructor(): AudioContextConstructor | undefined {
+  return window.AudioContext ?? (window as WindowWithWebKitAudioContext).webkitAudioContext;
+}
+
+function flushPendingAudio(): void {
+  const ctx = getAudioContext();
+  if (!ctx || ctx.state !== 'running' || pendingAudioCallbacks.length === 0) return;
+
+  const callbacks = pendingAudioCallbacks;
+  pendingAudioCallbacks = [];
+  callbacks.forEach((callback) => callback());
+}
+
+function createAudioContext(): AudioContext | null {
+  const AudioContextCtor = getAudioContextConstructor();
+  if (!AudioContextCtor) return null;
+
+  try {
+    const ctx = new AudioContextCtor();
+
+    // iOS Safari can leave an AudioContext interrupted after the app is backgrounded.
+    // When it reports that state, try to resume as soon as WebKit allows it again.
+    ctx.addEventListener('statechange', () => {
+      if (ctx.state === 'running') {
+        flushPendingAudio();
+        return;
+      }
+
+      if (document.visibilityState === 'visible' && contextNeedsResume(ctx.state)) {
+        void ctx
+          .resume()
+          .then(flushPendingAudio)
+          .catch(() => scheduleResumeRetry(ctx));
+      }
+    });
+
+    return ctx;
+  } catch {
+    return null;
+  }
+}
 
 function getAudioContext(): AudioContext | null {
-  if (!audioContext && 'AudioContext' in window) {
-    audioContext = new AudioContext();
+  if (audioContext?.state === 'closed') {
+    audioContext = null;
   }
+
+  if (!audioContext) {
+    audioContext = createAudioContext();
+  }
+
   return audioContext;
 }
 
-function contextNeedsResume(state: AudioContextState | string): boolean {
-  return state === 'suspended' || state === 'interrupted';
+function scheduleResumeRetry(ctx: AudioContext): void {
+  if (resumeTimeoutId !== null) return;
+
+  resumeTimeoutId = window.setTimeout(() => {
+    resumeTimeoutId = null;
+    if (document.visibilityState === 'visible' && contextNeedsResume(ctx.state)) {
+      void ctx
+        .resume()
+        .then(flushPendingAudio)
+        .catch(() => {});
+    }
+  }, 250);
+}
+
+function queueAudioCallback(callback: () => void): void {
+  // Keep the latest few cues instead of letting old missed beeps build up after a long background.
+  pendingAudioCallbacks = [...pendingAudioCallbacks.slice(-2), callback];
 }
 
 /** Run callback after AudioContext is running (iOS suspends/interrupts in background). */
@@ -19,34 +95,91 @@ function ensureContextResumed(fn: () => void): void {
   const ctx = getAudioContext();
   if (!ctx) return;
 
-  if (contextNeedsResume(ctx.state)) {
-    void ctx
-      .resume()
-      .then(fn)
-      .catch(() => {});
+  if (ctx.state === 'running') {
+    fn();
     return;
   }
 
-  fn();
+  queueAudioCallback(fn);
+
+  if (contextNeedsResume(ctx.state)) {
+    void ctx
+      .resume()
+      .then(() => {
+        if (ctx.state === 'running') {
+          flushPendingAudio();
+        } else {
+          scheduleResumeRetry(ctx);
+        }
+      })
+      .catch(() => {
+        scheduleResumeRetry(ctx);
+      });
+  }
 }
 
-// Call during user interaction to unlock audio on iOS
-export function initSound(): void {
+function primeAudioContext(): void {
   const ctx = getAudioContext();
   if (!ctx) return;
 
   if (contextNeedsResume(ctx.state)) {
-    void ctx.resume().catch(() => {});
+    void ctx
+      .resume()
+      .then(flushPendingAudio)
+      .catch(() => scheduleResumeRetry(ctx));
   }
+
+  if (ctx.state !== 'running') return;
+
+  try {
+    const buffer = ctx.createBuffer(1, 1, ctx.sampleRate);
+    const source = ctx.createBufferSource();
+    const gain = ctx.createGain();
+    gain.gain.value = 0;
+    source.buffer = buffer;
+    source.connect(gain);
+    gain.connect(ctx.destination);
+    source.start(0);
+    flushPendingAudio();
+  } catch {
+    // Ignore unlock errors
+  }
+}
+
+function installUnlockListeners(): void {
+  if (hasInstalledUnlockListeners) return;
+  hasInstalledUnlockListeners = true;
+
+  const unlock = (): void => primeAudioContext();
+  const options: AddEventListenerOptions = { passive: true, capture: true };
+
+  // WebKit usually requires a fresh user activation after returning from the home
+  // screen or app switcher. Re-prime audio on the next gesture instead of waiting
+  // for the next scheduled beep to fail silently.
+  window.addEventListener('pointerdown', unlock, options);
+  window.addEventListener('touchend', unlock, options);
+  window.addEventListener('click', unlock, options);
+  window.addEventListener('keydown', unlock, options);
+}
+
+// Call during user interaction to unlock audio on iOS
+export function initSound(): void {
+  installUnlockListeners();
+  primeAudioContext();
 }
 
 /** Pre-warm context when returning to the tab mid-workout (e.g. after minimize on iOS). */
 export function resumeAudioContext(): void {
   const ctx = getAudioContext();
-  if (!ctx || ctx.state === 'closed') return;
+  if (!ctx) return;
 
   if (contextNeedsResume(ctx.state)) {
-    void ctx.resume().catch(() => {});
+    void ctx
+      .resume()
+      .then(flushPendingAudio)
+      .catch(() => scheduleResumeRetry(ctx));
+  } else if (ctx.state === 'running') {
+    flushPendingAudio();
   }
 }
 

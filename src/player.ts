@@ -92,6 +92,7 @@ export class WorkoutPlayer {
   public resume(): void {
     if (!this.state.isPlaying || !this.state.isPaused) return;
 
+    initSound();
     this.state.isPaused = false;
     this.startCurrentStep();
     this.notifyStateChange();
@@ -100,6 +101,7 @@ export class WorkoutPlayer {
   public next(): void {
     if (!this.state.isPlaying) return;
 
+    initSound();
     this.clearTimer();
 
     if (this.getCurrentStep()?.type === 'timer') {
@@ -122,6 +124,7 @@ export class WorkoutPlayer {
   public completeRepsStep(): void {
     const currentStep = this.getCurrentStep();
     if (currentStep?.type === 'reps' && this.state.isPlaying) {
+      initSound();
       playCompletionSound();
       this.advanceToNextStep();
     }
@@ -218,7 +221,7 @@ export class WorkoutPlayer {
   }
 
   private setupVisibilityListener(): void {
-    document.addEventListener('visibilitychange', () => {
+    const handleReturnToForeground = (): void => {
       if (document.visibilityState === 'visible' && this.state.isPlaying && !this.state.isPaused) {
         resumeAudioContext();
         const currentStep = this.getCurrentStep();
@@ -231,7 +234,11 @@ export class WorkoutPlayer {
           }
         }
       }
-    });
+    };
+
+    document.addEventListener('visibilitychange', handleReturnToForeground);
+    window.addEventListener('pageshow', handleReturnToForeground);
+    window.addEventListener('focus', handleReturnToForeground);
   }
 
   private notifyStateChange(): void {
