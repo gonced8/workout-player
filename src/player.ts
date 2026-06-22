@@ -1,6 +1,13 @@
 import type { Workout, FlatStep, PlayerState } from './types';
 import { flattenSteps } from './workout';
-import { playCompletionSound, playCountdownBeep, initSound, resumeAudioContext } from './sound';
+import {
+  playCompletionSound,
+  playCountdownBeep,
+  initSound,
+  resumeAudioContext,
+  startSoundKeepAlive,
+  stopSoundKeepAlive,
+} from './sound';
 import {
   requestWakeLock,
   releaseWakeLock,
@@ -64,6 +71,7 @@ export class WorkoutPlayer {
     this.state.isPlaying = true;
     this.state.isPaused = false;
     setWorkoutActive(true);
+    startSoundKeepAlive();
     await requestWakeLock();
     this.startCurrentStep();
     this.notifyStateChange();
@@ -117,6 +125,7 @@ export class WorkoutPlayer {
     this.state.isPaused = false;
     this.resetTimerState();
     setWorkoutActive(false);
+    stopSoundKeepAlive();
     releaseWakeLock();
     this.notifyStateChange();
   }

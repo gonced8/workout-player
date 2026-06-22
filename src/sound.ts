@@ -9,9 +9,14 @@ interface WindowWithWebKitAudioContext extends Window {
 }
 
 let audioContext: AudioContext | null = null;
+let audioContextCreatedAt = 0;
 let hasInstalledUnlockListeners = false;
 let resumeTimeoutId: number | null = null;
+let keepAliveIntervalId: number | null = null;
 let pendingAudioCallbacks: Array<() => void> = [];
+
+const CONTEXT_REFRESH_AGE_MS = 15 * 60 * 1000;
+const KEEP_ALIVE_INTERVAL_MS = 20 * 1000;
 
 function contextNeedsResume(state: SafariAudioContextState | string): boolean {
   return state === 'suspended' || state === 'interrupted';
@@ -30,12 +35,26 @@ function flushPendingAudio(): void {
   callbacks.forEach((callback) => callback());
 }
 
+function closeAudioContext(): void {
+  if (!audioContext || audioContext.state === 'closed') {
+    audioContext = null;
+    audioContextCreatedAt = 0;
+    return;
+  }
+
+  const ctx = audioContext;
+  audioContext = null;
+  audioContextCreatedAt = 0;
+  void ctx.close().catch(() => {});
+}
+
 function createAudioContext(): AudioContext | null {
   const AudioContextCtor = getAudioContextConstructor();
   if (!AudioContextCtor) return null;
 
   try {
     const ctx = new AudioContextCtor();
+    audioContextCreatedAt = Date.now();
 
     // iOS Safari can leave an AudioContext interrupted after the app is backgrounded.
     // When it reports that state, try to resume as soon as WebKit allows it again.
@@ -59,9 +78,14 @@ function createAudioContext(): AudioContext | null {
   }
 }
 
-function getAudioContext(): AudioContext | null {
+function getAudioContext(forceRefresh = false): AudioContext | null {
   if (audioContext?.state === 'closed') {
     audioContext = null;
+    audioContextCreatedAt = 0;
+  }
+
+  if (forceRefresh && audioContext) {
+    closeAudioContext();
   }
 
   if (!audioContext) {
@@ -118,8 +142,10 @@ function ensureContextResumed(fn: () => void): void {
   }
 }
 
-function primeAudioContext(): void {
-  const ctx = getAudioContext();
+function primeAudioContext(forceRefresh = false): void {
+  const shouldRefreshStaleContext =
+    audioContext !== null && Date.now() - audioContextCreatedAt > CONTEXT_REFRESH_AGE_MS;
+  const ctx = getAudioContext(forceRefresh || shouldRefreshStaleContext);
   if (!ctx) return;
 
   if (contextNeedsResume(ctx.state)) {
@@ -168,9 +194,51 @@ export function initSound(): void {
   primeAudioContext();
 }
 
+function playKeepAlivePulse(): void {
+  ensureContextResumed(() => {
+    const ctx = getAudioContext();
+    if (!ctx || ctx.state !== 'running') return;
+
+    try {
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      oscillator.frequency.value = 30;
+      oscillator.type = 'sine';
+      gainNode.gain.setValueAtTime(0.0001, ctx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.03);
+      oscillator.start(ctx.currentTime);
+      oscillator.stop(ctx.currentTime + 0.03);
+    } catch {
+      // Ignore keep-alive errors
+    }
+  });
+}
+
+/** Keep iOS Safari's audio session alive throughout long workouts. */
+export function startSoundKeepAlive(): void {
+  initSound();
+  if (keepAliveIntervalId !== null) return;
+
+  keepAliveIntervalId = window.setInterval(() => {
+    if (document.visibilityState !== 'visible') return;
+    playKeepAlivePulse();
+  }, KEEP_ALIVE_INTERVAL_MS);
+}
+
+export function stopSoundKeepAlive(): void {
+  if (keepAliveIntervalId === null) return;
+  clearInterval(keepAliveIntervalId);
+  keepAliveIntervalId = null;
+}
+
 /** Pre-warm context when returning to the tab mid-workout (e.g. after minimize on iOS). */
 export function resumeAudioContext(): void {
-  const ctx = getAudioContext();
+  const ctx = getAudioContext(
+    document.visibilityState === 'visible' && audioContext?.state === 'interrupted'
+  );
   if (!ctx) return;
 
   if (contextNeedsResume(ctx.state)) {
